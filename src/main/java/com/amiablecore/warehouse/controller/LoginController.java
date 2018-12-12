@@ -21,7 +21,7 @@ public class LoginController {
 	protected LoginService loginService;
 
 	@PostMapping(value = "/login/{userType}")
-	public ResponseEntity<LoginResponse> login(@PathVariable String type, @RequestBody LoginRequest request) {
+	public ResponseEntity<LoginResponse> login(@PathVariable("userType") String type, @RequestBody LoginRequest request) {
 		request.setUserType(UserType.fromString(type));
 		LoginResponse response = loginService.validateLogin(request);
 		return new ResponseEntity<LoginResponse>(response, HttpStatus.OK);
