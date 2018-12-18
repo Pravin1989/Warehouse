@@ -6,8 +6,9 @@ package com.amiablecore.warehouse.beans;
  */
 public class Category {
 	private Integer categoryId;
-	private Integer categoryName;
-	private Commodity commodity;
+	private String categoryName;
+	private String commodityName;
+	private String whAdminId;
 
 	public Integer getCategoryId() {
 		return categoryId;
@@ -17,19 +18,27 @@ public class Category {
 		this.categoryId = categoryId;
 	}
 
-	public Integer getCategoryName() {
+	public String getCategoryName() {
 		return categoryName;
 	}
 
-	public void setCategoryName(Integer categoryName) {
+	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
 	}
 
-	public Commodity getCommodity() {
-		return commodity;
+	public String getCommodityName() {
+		return commodityName;
 	}
 
-	public void setCommodity(Commodity commodity) {
-		this.commodity = commodity;
+	public void setCommodityName(String commodityName) {
+		this.commodityName = commodityName;
+	}
+
+	public String getWhAdminId() {
+		return whAdminId;
+	}
+
+	public void setWhAdminId(String whAdminId) {
+		this.whAdminId = whAdminId;
 	}
 }
