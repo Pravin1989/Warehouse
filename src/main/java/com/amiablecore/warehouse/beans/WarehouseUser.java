@@ -2,12 +2,26 @@ package com.amiablecore.warehouse.beans;
 
 public class WarehouseUser {
     private String name;
-    private String loginid;
+    private String loginId;
     private String password;
     private String contactNo;
     private String whId;
+    private String userId;
+    
 
-    public void setWhId(String whId) {
+    public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public void setLoginId(String loginId) {
+		this.loginId = loginId;
+	}
+
+	public void setWhId(String whId) {
         this.whId = whId;
     }
 
@@ -19,8 +33,8 @@ public class WarehouseUser {
         return name;
     }
 
-    public String getLoginid() {
-        return loginid;
+    public String getLoginId() {
+        return loginId;
     }
 
     public String getPassword() {
@@ -35,8 +49,8 @@ public class WarehouseUser {
         this.name = name;
     }
 
-    public void setLoginid(String loginid) {
-        this.loginid = loginid;
+    public void setLoginid(String loginId) {
+        this.loginId = loginId;
     }
 
     public void setPassword(String password) {
