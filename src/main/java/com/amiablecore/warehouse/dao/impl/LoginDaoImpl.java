@@ -48,10 +48,25 @@ public class LoginDaoImpl implements LoginDAO {
 //		}
 		if(request.getUserType()==UserType.WH_ADMIN) {
 			logger.info("Logged In as Admin");
-			response.setLoginIndicator(1);
+			if(request.getLoginId().equals("admin") && request.getLoginPassword().equals("admin")) {
+				response.setLoginIndicator(true);
+				response.setLoggedInMessage("Login Is Done as Admin");
+				response.setWhId("1000");
+			}else {
+				response.setLoginIndicator(false);
+				response.setLoggedInMessage("Admin not present");
+			}
+			
 		}else {
 			logger.info("Logged In as User");
-			response.setLoginIndicator(0);
+			if(request.getLoginId().equals("admin") && request.getLoginPassword().equals("admin")) {
+				response.setLoginIndicator(true);
+				response.setLoggedInMessage("Login Is Done as User");
+				response.setWhId("2000");
+			}else {
+				response.setLoginIndicator(false);
+				response.setLoggedInMessage("User not present");
+			}
 		}
 //		if (rows.size() != 0) {
 //			response.setLoginIndicator(1);
