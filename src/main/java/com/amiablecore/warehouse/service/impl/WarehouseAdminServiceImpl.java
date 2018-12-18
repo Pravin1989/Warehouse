@@ -1,5 +1,7 @@
 package com.amiablecore.warehouse.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,5 +40,10 @@ public class WarehouseAdminServiceImpl implements WarehouseAdminService {
 	@Override
 	public Category addCategory(Category category) {
 		return warehouseAdminDao.addCategory(category);
+	}
+
+	@Override
+	public List<Commodity> retrieveWhAminId(String whAdminId) {
+		return warehouseAdminDao.retrieveWhAminId(whAdminId);
 	}
 }

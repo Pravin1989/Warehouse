@@ -1,5 +1,12 @@
 package com.amiablecore.warehouse.dao.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +35,12 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 
 	private static Logger logger = LoggerFactory.getLogger(WarehouseAdminDAOImpl.class);
 
+	private static Map<Integer, Commodity> commodities = new HashMap<>();
+
+	private Integer commodityCounter = 100;
+
+	private Set<Integer> keySet;
+
 	@Override
 	public WarehouseUser createUser(WarehouseUser user) {
 		logger.info("LoginId : {}", user.getLoginId());
@@ -54,6 +67,8 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 	public Commodity addCommodity(Commodity commodity) {
 		logger.info("Commodity Name : {}", commodity.getCommodityName());
 		logger.info("WH ID : {}", commodity.getWhAdminId());
+		commodity.setCommodityId(commodityCounter++);
+		commodities.put(commodityCounter, commodity);
 		return commodity;
 	}
 
@@ -63,6 +78,23 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 		logger.info("Commodity Names : {}", category.getCommodityName());
 		logger.info("WH Admin ID : {}", category.getWhAdminId());
 		return category;
+	}
+
+	@Override
+	public List<Commodity> retrieveWhAminId(String whAdminId) {
+		List<Commodity> commoditiesList= new ArrayList<>();
+		if(Integer.parseInt(whAdminId) == 1000) {
+			for (Map.Entry<Integer, Commodity> commodity : commodities.entrySet())
+			{
+			    //System.out.println(entry.getKey() + "/" + entry.getValue());
+				Commodity com= new Commodity();
+				com.setCommodityId(commodity.getValue().getCommodityId());
+				com.setCommodityName(commodity.getValue().getCommodityName());
+				com.setWhAdminId(commodity.getValue().getWhAdminId());
+				commoditiesList.add(com);
+			}
+		}
+		return commoditiesList;
 	}
 
 }
