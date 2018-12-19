@@ -95,7 +95,7 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 	}
 
 	@Override
-	public List<Commodity> retrieveWhAminId(String whAdminId) {
+	public List<Commodity> retrieveCommodities(String whAdminId) {
 		List<Commodity> commoditiesList = new ArrayList<>();
 		if (Integer.parseInt(whAdminId) == 1000) {
 			for (Map.Entry<Integer, Commodity> commodity : commodities.entrySet()) {

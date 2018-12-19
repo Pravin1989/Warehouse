@@ -63,18 +63,19 @@ public class LoginDaoImpl implements LoginDAO {
 			}
 
 		} else {
-			logger.info("Logged In as User");
 			for (Map.Entry<Integer, WarehouseUser> users : WarehouseAdminDAOImpl.users.entrySet()) {
-				if (users.getValue().getLoginId().equals(request.getLoginId())) {
+				if (users.getValue().getLoginId().equals(request.getLoginId()) && users.getValue().getPassword().equals(request.getLoginPassword())) {
 					response.setWhId(users.getValue().getWhAdminId());
 					response.setUserId(users.getValue().getUserId());
 					response.setLoginIndicator(true);
 					response.setLoggedInMessage("Login Is Done as User");
+					logger.info("Logged In as User");
 					return response;
 				}
 			}
 			response.setLoginIndicator(false);
 			response.setLoggedInMessage("User not present");
+			logger.info("User Not Present");
 		}
 		// if (rows.size() != 0) {
 		// response.setLoginIndicator(1);

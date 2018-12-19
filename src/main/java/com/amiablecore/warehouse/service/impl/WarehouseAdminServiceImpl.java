@@ -43,7 +43,7 @@ public class WarehouseAdminServiceImpl implements WarehouseAdminService {
 	}
 
 	@Override
-	public List<Commodity> retrieveWhAminId(String whAdminId) {
-		return warehouseAdminDao.retrieveWhAminId(whAdminId);
+	public List<Commodity> retrieveCommodities(String whAdminId) {
+		return warehouseAdminDao.retrieveCommodities(whAdminId);
 	}
 }
