@@ -12,13 +12,13 @@ public class Trader {
 	private String traderState;
 	private String traderPinCode;
 	private String whId;
-	private String traderId;
+	private Integer traderId;
 
-	public String getTraderId() {
+	public Integer getTraderId() {
 		return traderId;
 	}
 
-	public void setTraderId(String traderId) {
+	public void setTraderId(Integer traderId) {
 		this.traderId = traderId;
 	}
 

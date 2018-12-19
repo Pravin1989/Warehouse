@@ -1,64 +1,58 @@
 package com.amiablecore.warehouse.beans;
 
 public class WarehouseUser {
-    private String name;
-    private String loginId;
-    private String password;
-    private String contactNo;
-    private String whId;
-    private String userId;
-    
+	private String name;
+	private String loginId;
+	private String password;
+	private String contactNo;
+	private String whAdminId;
+	private Integer userId;
 
-    public String getUserId() {
-		return userId;
+	public String getName() {
+		return name;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getLoginId() {
+		return loginId;
 	}
 
 	public void setLoginId(String loginId) {
 		this.loginId = loginId;
 	}
 
-	public void setWhId(String whId) {
-        this.whId = whId;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public String getWhId() {
-        return whId;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getContactNo() {
+		return contactNo;
+	}
 
-    public String getLoginId() {
-        return loginId;
-    }
+	public void setContactNo(String contactNo) {
+		this.contactNo = contactNo;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getWhAdminId() {
+		return whAdminId;
+	}
 
-    public String getContactNo() {
-        return contactNo;
-    }
+	public void setWhAdminId(String whAdminId) {
+		this.whAdminId = whAdminId;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public Integer getUserId() {
+		return userId;
+	}
 
-    public void setLoginid(String loginId) {
-        this.loginId = loginId;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setContactNo(String contactNo) {
-        this.contactNo = contactNo;
-    }
-
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
 }

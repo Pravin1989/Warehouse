@@ -51,6 +51,12 @@ public class WarehouseAdminController {
 	}
 
 	@GetMapping(value = "/commodity/retrieveCommodities/{whAdminId}")
+	public ResponseEntity<List<Commodity>> retrieveCommodities(@PathVariable("whAdminId") String whAdmiId) {
+		List<Commodity> commodities = warehouseAdminService.retrieveWhAminId(whAdmiId);
+		return new ResponseEntity<List<Commodity>>(commodities, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/commodity/retrieveCommodities/{whUserId}")
 	public ResponseEntity<List<Commodity>> addCategory(@PathVariable("whAdminId") String whAdmiId) {
 		List<Commodity> commodities = warehouseAdminService.retrieveWhAminId(whAdmiId);
 		return new ResponseEntity<List<Commodity>>(commodities, HttpStatus.OK);

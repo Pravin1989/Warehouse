@@ -7,7 +7,16 @@ public class LoginResponse {
 	private boolean loginIndicator;
 	private String loggedInMessage;
 	private String whId;
+	private Integer userId;
 	
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
 	public String getWhId() {
 		return whId;
 	}

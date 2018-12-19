@@ -2,10 +2,8 @@ package com.amiablecore.warehouse.dao.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,11 +33,21 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 
 	private static Logger logger = LoggerFactory.getLogger(WarehouseAdminDAOImpl.class);
 
-	private static Map<Integer, Commodity> commodities = new HashMap<>();
+	public static Map<Integer, Commodity> commodities = new HashMap<>();
+
+	public static Map<Integer, WarehouseUser> users = new HashMap<>();
+
+	public static Map<Integer, Category> categories = new HashMap<>();
+
+	public static Map<Integer, Trader> traders = new HashMap<>();
+
+	private Integer categoryCounter = 1;
+
+	private Integer traderCounter = 10;
 
 	private Integer commodityCounter = 100;
 
-	private Set<Integer> keySet;
+	private Integer userCounter = 1000;
 
 	@Override
 	public WarehouseUser createUser(WarehouseUser user) {
@@ -47,7 +55,9 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 		logger.info("Name : {}", user.getName());
 		logger.info("Password  : {}", user.getPassword());
 		logger.info("Contact No :  {}", user.getContactNo());
-		logger.info("WH ID : {}", user.getWhId());
+		logger.info("WH ID : {}", user.getWhAdminId());
+		user.setUserId(userCounter++);
+		users.put(userCounter, user);
 		return user;
 	}
 
@@ -60,6 +70,8 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 		logger.info("City :  {}", trader.getCity());
 		logger.info("Pin Code : {}", trader.getTraderPinCode());
 		logger.info("WH ID : {}", trader.getWhId());
+		trader.setTraderId(traderCounter++);
+		traders.put(traderCounter, trader);
 		return trader;
 	}
 
@@ -77,17 +89,17 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 		logger.info("Category Name : {}", category.getCategoryName());
 		logger.info("Commodity Names : {}", category.getCommodityName());
 		logger.info("WH Admin ID : {}", category.getWhAdminId());
+		category.setCategoryId(categoryCounter++);
+		categories.put(categoryCounter, category);
 		return category;
 	}
 
 	@Override
 	public List<Commodity> retrieveWhAminId(String whAdminId) {
-		List<Commodity> commoditiesList= new ArrayList<>();
-		if(Integer.parseInt(whAdminId) == 1000) {
-			for (Map.Entry<Integer, Commodity> commodity : commodities.entrySet())
-			{
-			    //System.out.println(entry.getKey() + "/" + entry.getValue());
-				Commodity com= new Commodity();
+		List<Commodity> commoditiesList = new ArrayList<>();
+		if (Integer.parseInt(whAdminId) == 1000) {
+			for (Map.Entry<Integer, Commodity> commodity : commodities.entrySet()) {
+				Commodity com = new Commodity();
 				com.setCommodityId(commodity.getValue().getCommodityId());
 				com.setCommodityName(commodity.getValue().getCommodityName());
 				com.setWhAdminId(commodity.getValue().getWhAdminId());
@@ -96,5 +108,4 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 		}
 		return commoditiesList;
 	}
-
 }
