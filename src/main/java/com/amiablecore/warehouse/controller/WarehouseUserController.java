@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.amiablecore.warehouse.beans.Category;
+import com.amiablecore.warehouse.beans.Commodity;
+import com.amiablecore.warehouse.beans.Trader;
 import com.amiablecore.warehouse.service.WarehouseUserService;
 
 @RestController
@@ -18,8 +20,21 @@ public class WarehouseUserController {
 	private WarehouseUserService warehouseUserService;
 
 	@GetMapping(value = "/category/retrieveCategories/{whAdminId}")
-	public ResponseEntity<List<Category>> addCategory(@PathVariable("whAdminId") String whAdmiId) {
+	public ResponseEntity<List<Category>> retrieveCategories(@PathVariable("whAdminId") String whAdmiId) {
 		List<Category> categories = warehouseUserService.retrieveCategories(whAdmiId);
 		return new ResponseEntity<List<Category>>(categories, HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/trader/retrieveTraders/{whAdminId}")
+	public ResponseEntity<List<Trader>> retrieveTraderDetails(@PathVariable("whAdminId") String whAdmiId) {
+		List<Trader> categories = warehouseUserService.retrieveTraders(whAdmiId);
+		return new ResponseEntity<List<Trader>>(categories, HttpStatus.OK);
+	}
+	
+
+	@GetMapping(value = "/commodity/retrieveCommodities/{whAdminId}")
+	public ResponseEntity<List<Commodity>> retrieveCommodities(@PathVariable("whAdminId") String whAdmiId) {
+		List<Commodity> commodities = warehouseUserService.retrieveCommodities(whAdmiId);
+		return new ResponseEntity<List<Commodity>>(commodities, HttpStatus.OK);
 	}
 }

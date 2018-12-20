@@ -69,7 +69,7 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 		logger.info("State : {}", trader.getTraderState());
 		logger.info("City :  {}", trader.getCity());
 		logger.info("Pin Code : {}", trader.getTraderPinCode());
-		logger.info("WH ID : {}", trader.getWhId());
+		logger.info("WH ID : {}", trader.getWhAdminId());
 		trader.setTraderId(traderCounter++);
 		traders.put(traderCounter, trader);
 		return trader;
@@ -87,25 +87,10 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 	@Override
 	public Category addCategory(Category category) {
 		logger.info("Category Name : {}", category.getCategoryName());
-		logger.info("Commodity Names : {}", category.getCommodityName());
 		logger.info("WH Admin ID : {}", category.getWhAdminId());
 		category.setCategoryId(categoryCounter++);
 		categories.put(categoryCounter, category);
 		return category;
 	}
 
-	@Override
-	public List<Commodity> retrieveCommodities(String whAdminId) {
-		List<Commodity> commoditiesList = new ArrayList<>();
-		if (Integer.parseInt(whAdminId) == 1000) {
-			for (Map.Entry<Integer, Commodity> commodity : commodities.entrySet()) {
-				Commodity com = new Commodity();
-				com.setCommodityId(commodity.getValue().getCommodityId());
-				com.setCommodityName(commodity.getValue().getCommodityName());
-				com.setWhAdminId(commodity.getValue().getWhAdminId());
-				commoditiesList.add(com);
-			}
-		}
-		return commoditiesList;
-	}
 }

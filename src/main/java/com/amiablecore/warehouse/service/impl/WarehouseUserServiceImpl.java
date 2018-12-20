@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.amiablecore.warehouse.beans.Category;
+import com.amiablecore.warehouse.beans.Commodity;
+import com.amiablecore.warehouse.beans.Trader;
 import com.amiablecore.warehouse.dao.WarehouseUserDAO;
 import com.amiablecore.warehouse.service.WarehouseUserService;
 
@@ -20,4 +22,13 @@ public class WarehouseUserServiceImpl implements WarehouseUserService {
 		return warehouseUserDAO.retrieveCategories(whAdminId);
 	}
 
+	@Override
+	public List<Trader> retrieveTraders(String whAdminId) {
+		return warehouseUserDAO.retrieveTraders(whAdminId);
+	}
+	
+	@Override
+	public List<Commodity> retrieveCommodities(String whAdminId) {
+		return warehouseUserDAO.retrieveCommodities(whAdminId);
+	}
 }

@@ -47,9 +47,4 @@ public class WarehouseAdminController {
 		return new ResponseEntity<Category>(newTrader, HttpStatus.CREATED);
 	}
 
-	@GetMapping(value = "/commodity/retrieveCommodities/{whAdminId}")
-	public ResponseEntity<List<Commodity>> retrieveCommodities(@PathVariable("whAdminId") String whAdmiId) {
-		List<Commodity> commodities = warehouseAdminService.retrieveCommodities(whAdmiId);
-		return new ResponseEntity<List<Commodity>>(commodities, HttpStatus.OK);
-	}
 }

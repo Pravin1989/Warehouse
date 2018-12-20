@@ -21,5 +21,4 @@ public interface WarehouseAdminDAO {
 
 	public Category addCategory(Category category);
 
-	public List<Commodity> retrieveCommodities(String whAdminId);
 }

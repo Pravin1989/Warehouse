@@ -11,7 +11,7 @@ public class Trader {
 	private String contactNo;
 	private String traderState;
 	private String traderPinCode;
-	private String whId;
+	private String whAdminId;
 	private Integer traderId;
 
 	public Integer getTraderId() {
@@ -70,11 +70,11 @@ public class Trader {
 		this.traderPinCode = traderPinCode;
 	}
 
-	public String getWhId() {
-		return whId;
+	public String getWhAdminId() {
+		return whAdminId;
 	}
 
-	public void setWhId(String whId) {
-		this.whId = whId;
+	public void setWhAdminId(String whId) {
+		this.whAdminId = whId;
 	}
 }
