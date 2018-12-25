@@ -7,7 +7,7 @@ import com.amiablecore.warehouse.beans.Commodity;
 import com.amiablecore.warehouse.beans.Trader;
 
 public interface WarehouseUserDAO {
-	public List<Category> retrieveCategories(String whAdminId);
+	public List<Category> retrieveCategories(String commodityId);
 
 	public List<Trader> retrieveTraders(String whAdminId);
 

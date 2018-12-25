@@ -41,9 +41,9 @@ public class WarehouseAdminController {
 		return new ResponseEntity<Commodity>(newTrader, HttpStatus.CREATED);
 	}
 
-	@PostMapping(value = "/category/add")
-	public ResponseEntity<Category> addCategory(@RequestBody Category category) {
-		Category newTrader = warehouseAdminService.addCategory(category);
+	@PostMapping(value = "/category/add/{commodityId}")
+	public ResponseEntity<Category> addCategory(@RequestBody Category category,@PathVariable String commodityId) {
+		Category newTrader = warehouseAdminService.addCategory(category, commodityId);
 		return new ResponseEntity<Category>(newTrader, HttpStatus.CREATED);
 	}
 

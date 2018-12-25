@@ -63,25 +63,31 @@ public class LoginDaoImpl implements LoginDAO {
 			}
 
 		} else {
-			for (Map.Entry<Integer, WarehouseUser> users : WarehouseAdminDAOImpl.users.entrySet()) {
-				if (users.getValue().getLoginId().equals(request.getLoginId()) && users.getValue().getPassword().equals(request.getLoginPassword())) {
-					response.setWhId(users.getValue().getWhAdminId());
-					response.setUserId(users.getValue().getUserId());
-					response.setLoginIndicator(true);
-					response.setLoggedInMessage("Login Is Done as User");
-					logger.info("Logged In as User");
-					return response;
-				}
-			}
-			response.setLoginIndicator(false);
-			response.setLoggedInMessage("User not present");
-			logger.info("User Not Present");
+//			for (Map.Entry<Integer, WarehouseUser> users : WarehouseAdminDAOImpl.users.entrySet()) {
+//				if (users.getValue().getLoginId().equals(request.getLoginId()) && users.getValue().getPassword().equals(request.getLoginPassword())) {
+//					response.setWhId(users.getValue().getWhAdminId());
+//					response.setUserId(users.getValue().getUserId());
+//					response.setLoginIndicator(true);
+//					response.setLoggedInMessage("Login Is Done as User");
+//					logger.info("Logged In as User");
+//					return response;
+//				}
+//			}
+//			response.setLoginIndicator(false);
+//			response.setLoggedInMessage("User not present");
+//			logger.info("User Not Present");
+			response.setWhId("1000");
+			response.setUserId(100);
+			response.setLoginIndicator(true);
 		}
 		// if (rows.size() != 0) {
 		// response.setLoginIndicator(1);
 		// response.setLoggedInMessage("Login Done !!");
 		// response.setCustomer(customer);
 		// }
+			
+			response.setLoggedInMessage("Login Is Done as User");
+			logger.info("Logged In as User");
 		return response;
 
 	}

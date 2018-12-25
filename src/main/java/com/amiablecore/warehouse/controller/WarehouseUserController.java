@@ -19,9 +19,9 @@ public class WarehouseUserController {
 	@Autowired
 	private WarehouseUserService warehouseUserService;
 
-	@GetMapping(value = "/category/retrieveCategories/{whAdminId}")
-	public ResponseEntity<List<Category>> retrieveCategories(@PathVariable("whAdminId") String whAdmiId) {
-		List<Category> categories = warehouseUserService.retrieveCategories(whAdmiId);
+	@GetMapping(value = "/category/retrieveCategories/{commodityId}")
+	public ResponseEntity<List<Category>> retrieveCategories(@PathVariable("commodityId") String commodityId) {
+		List<Category> categories = warehouseUserService.retrieveCategories(commodityId);
 		return new ResponseEntity<List<Category>>(categories, HttpStatus.OK);
 	}
 

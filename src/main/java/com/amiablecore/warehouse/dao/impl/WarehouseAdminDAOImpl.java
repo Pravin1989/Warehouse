@@ -41,6 +41,10 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 
 	public static Map<Integer, Trader> traders = new HashMap<>();
 
+	public static Map<Integer, List<Category>> commodityCategories = new HashMap<>();
+
+	private List<Category> categoriesList = new ArrayList<>();
+
 	private Integer categoryCounter = 1;
 
 	private Integer traderCounter = 10;
@@ -85,11 +89,13 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 	}
 
 	@Override
-	public Category addCategory(Category category) {
+	public Category addCategory(Category category, String commodityId) {
 		logger.info("Category Name : {}", category.getCategoryName());
 		logger.info("WH Admin ID : {}", category.getWhAdminId());
 		category.setCategoryId(categoryCounter++);
 		categories.put(categoryCounter, category);
+		categoriesList.add(category);
+		commodityCategories.put(Integer.parseInt(commodityId), categoriesList);
 		return category;
 	}
 

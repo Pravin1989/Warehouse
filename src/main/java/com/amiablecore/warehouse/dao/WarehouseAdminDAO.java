@@ -19,6 +19,6 @@ public interface WarehouseAdminDAO {
 
 	public Commodity addCommodity(Commodity commodity);
 
-	public Category addCategory(Category category);
+	public Category addCategory(Category category, String commodityId);
 
 }

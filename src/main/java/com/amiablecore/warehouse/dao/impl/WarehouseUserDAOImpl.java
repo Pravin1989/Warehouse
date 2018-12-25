@@ -19,14 +19,14 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 	private static Logger logger = LoggerFactory.getLogger(WarehouseUserDAOImpl.class);
 
 	@Override
-	public List<Category> retrieveCategories(String whAdminId) {
+	public List<Category> retrieveCategories(String commodityId) {
 		List<Category> list = new ArrayList<Category>();
-		for (Map.Entry<Integer, Category> category : WarehouseAdminDAOImpl.categories.entrySet()) {
-			if (category.getValue().getWhAdminId().equals(whAdminId)) {
-				list.add(category.getValue());
+		for (Map.Entry<Integer, List<Category>> commodity : WarehouseAdminDAOImpl.commodityCategories.entrySet()) {
+			if (commodity.getKey() == Integer.parseInt(commodityId)) {
+				logger.info("Categories : {}", commodity.getValue());
+				return commodity.getValue();
 			}
 		}
-		logger.info("Categories : {}", list);
 		return list;
 	}
 
@@ -42,7 +42,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		logger.info("Traders  : {}", list);
 		return list;
 	}
-	
+
 	@Override
 	public List<Commodity> retrieveCommodities(String whAdminId) {
 		List<Commodity> commoditiesList = new ArrayList<>();

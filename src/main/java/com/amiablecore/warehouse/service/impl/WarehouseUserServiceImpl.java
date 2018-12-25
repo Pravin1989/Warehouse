@@ -18,8 +18,8 @@ public class WarehouseUserServiceImpl implements WarehouseUserService {
 	private WarehouseUserDAO warehouseUserDAO;
 
 	@Override
-	public List<Category> retrieveCategories(String whAdminId) {
-		return warehouseUserDAO.retrieveCategories(whAdminId);
+	public List<Category> retrieveCategories(String commodityId) {
+		return warehouseUserDAO.retrieveCategories(commodityId);
 	}
 
 	@Override

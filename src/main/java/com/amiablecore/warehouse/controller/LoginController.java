@@ -13,11 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.amiablecore.warehouse.beans.Commodity;
 import com.amiablecore.warehouse.beans.LoginRequest;
 import com.amiablecore.warehouse.beans.LoginResponse;
 import com.amiablecore.warehouse.beans.UserType;
-import com.amiablecore.warehouse.dao.impl.LoginDaoImpl;
 import com.amiablecore.warehouse.service.LoginService;
 
 @RestController
