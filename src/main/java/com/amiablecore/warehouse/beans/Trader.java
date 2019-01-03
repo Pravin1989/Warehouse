@@ -14,6 +14,17 @@ public class Trader {
 	private String whAdminId;
 	private Integer traderId;
 
+	public Trader() {
+
+	}
+
+	public Trader(String traderName, String whAdminId, Integer traderId) {
+		super();
+		this.traderName = traderName;
+		this.whAdminId = whAdminId;
+		this.traderId = traderId;
+	}
+
 	public Integer getTraderId() {
 		return traderId;
 	}
