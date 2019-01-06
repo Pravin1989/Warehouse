@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 public class LoginResponse {
 	private boolean loginIndicator;
 	private String loggedInMessage;
-	private String whId;
+	private Integer whId;
 	private Integer userId;
 	
 	public Integer getUserId() {
@@ -17,11 +17,11 @@ public class LoginResponse {
 		this.userId = userId;
 	}
 
-	public String getWhId() {
+	public Integer getWhId() {
 		return whId;
 	}
 
-	public void setWhId(String whId) {
+	public void setWhId(Integer whId) {
 		this.whId = whId;
 	}
 

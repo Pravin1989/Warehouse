@@ -53,12 +53,12 @@ public class WarehouseUserController {
 		return new ResponseEntity<Inward>(inward, HttpStatus.OK);
 	}
 
-	@PostMapping(value = "/synchronize/inward/")
+	@PostMapping(value = "/synchronize/inward/{whUserId}")
 	public ResponseEntity<String> synchronizeInward(@RequestBody List<Inward> inwardList) {
 		return new ResponseEntity<String>("", HttpStatus.OK);
 	}
 	
-	@PostMapping(value = "/synchronize/outward/")
+	@PostMapping(value = "/synchronize/outward/{whUserId}")
 	public ResponseEntity<String> synchronizeOutward(@RequestBody List<Outward> outwardList) {
 		return new ResponseEntity<String>("", HttpStatus.OK);
 	}

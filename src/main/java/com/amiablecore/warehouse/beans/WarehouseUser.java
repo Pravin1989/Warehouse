@@ -1,12 +1,12 @@
 package com.amiablecore.warehouse.beans;
 
 public class WarehouseUser {
+	private Integer userId;
 	private String name;
 	private String loginId;
 	private String password;
 	private String contactNo;
 	private String whAdminId;
-	private Integer userId;
 
 	public String getName() {
 		return name;
