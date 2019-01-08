@@ -7,7 +7,33 @@ package com.amiablecore.warehouse.beans;
 public class Commodity {
 	private Integer commodityId;
 	private String commodityName;
-	private String whAdminId;
+	private Integer whAdminId;
+	private boolean active;
+	private boolean sync;
+	private boolean alreadyPresent;
+
+	public void setAlreadyPresent(boolean alreadyPresent) {
+		this.alreadyPresent = alreadyPresent;
+	}
+	
+	public boolean isAlreadyPresent() {
+		return alreadyPresent;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public boolean isSync() {
+		return sync;
+	}
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public void setSync(boolean sync) {
+		this.sync = sync;
+	}
 
 	public Integer getCommodityId() {
 		return commodityId;
@@ -25,11 +51,11 @@ public class Commodity {
 		this.commodityName = commodityName;
 	}
 
-	public String getWhAdminId() {
+	public Integer getWhAdminId() {
 		return whAdminId;
 	}
 
-	public void setWhAdminId(String whAdminId) {
+	public void setWhAdminId(Integer whAdminId) {
 		this.whAdminId = whAdminId;
 	}
 

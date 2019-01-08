@@ -45,22 +45,22 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		// }
 		// }
 
-		Trader tr1 = new Trader("Pravin", "", 111);
-		Trader tr2 = new Trader("Pranav", "", 112);
-		Trader tr3 = new Trader("Dhananjay", "", 113);
-		Trader tr4 = new Trader("Dj", "", 114);
-
-		dblist.add(tr1);
-		dblist.add(tr2);
-		dblist.add(tr3);
-		dblist.add(tr4);
-		logger.info("Traders  : {}", dblist);
-		for (int i = 0; i < dblist.size(); i++) {
-			Trader t = dblist.get(i);
-			if (t.getTraderName().contains(traderName)) {
-				list.add(t);
-			}
-		}
+//		Trader tr1 = new Trader("Pravin", "", 111);
+//		Trader tr2 = new Trader("Pranav", "", 112);
+//		Trader tr3 = new Trader("Dhananjay", "", 113);
+//		Trader tr4 = new Trader("Dj", "", 114);
+//
+//		dblist.add(tr1);
+//		dblist.add(tr2);
+//		dblist.add(tr3);
+//		dblist.add(tr4);
+//		logger.info("Traders  : {}", dblist);
+//		for (int i = 0; i < dblist.size(); i++) {
+//			Trader t = dblist.get(i);
+//			if (t.getTraderName().contains(traderName)) {
+//				list.add(t);
+//			}
+//		}
 		return list;
 	}
 

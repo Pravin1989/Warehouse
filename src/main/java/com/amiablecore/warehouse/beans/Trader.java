@@ -11,14 +11,41 @@ public class Trader {
 	private String contactNo;
 	private String traderState;
 	private String traderPinCode;
-	private String whAdminId;
+	private Integer whAdminId;
 	private Integer traderId;
+	private boolean active;
+	private boolean sync;
+	private boolean alreadyPresent;
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public boolean isSync() {
+		return sync;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public void setSync(boolean sync) {
+		this.sync = sync;
+	}
+
+	public void setAlreadyPresent(boolean alreadyPresent) {
+		this.alreadyPresent = alreadyPresent;
+	}
+
+	public boolean isAlreadyPresent() {
+		return alreadyPresent;
+	}
 
 	public Trader() {
 
 	}
 
-	public Trader(String traderName, String whAdminId, Integer traderId) {
+	public Trader(String traderName, Integer whAdminId, Integer traderId) {
 		super();
 		this.traderName = traderName;
 		this.whAdminId = whAdminId;
@@ -81,11 +108,11 @@ public class Trader {
 		this.traderPinCode = traderPinCode;
 	}
 
-	public String getWhAdminId() {
+	public Integer getWhAdminId() {
 		return whAdminId;
 	}
 
-	public void setWhAdminId(String whId) {
+	public void setWhAdminId(Integer whId) {
 		this.whAdminId = whId;
 	}
 }

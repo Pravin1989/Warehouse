@@ -60,7 +60,7 @@ public class LoginDaoImpl implements LoginDAO {
 			for (Map<String, Object> row : rows) {
 				logger.info("Logged In as User");
 				response.setWhId((Integer) row.get("whadminid"));
-				response.setUserId((Integer)row.get("whuserid"));
+				response.setUserId((Integer) row.get("whuserid"));
 				response.setLoginIndicator(true);
 				response.setLoggedInMessage("Login Is Done as Admin");
 			}

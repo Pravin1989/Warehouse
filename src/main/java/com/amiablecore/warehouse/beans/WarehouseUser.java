@@ -6,7 +6,16 @@ public class WarehouseUser {
 	private String loginId;
 	private String password;
 	private String contactNo;
-	private String whAdminId;
+	private Integer whAdminId;
+	private boolean alreadyPresent;
+
+	public void setAlreadyPresent(boolean alreadyPresent) {
+		this.alreadyPresent = alreadyPresent;
+	}
+	
+	public boolean isAlreadyPresent() {
+		return alreadyPresent;
+	}
 
 	public String getName() {
 		return name;
@@ -40,11 +49,11 @@ public class WarehouseUser {
 		this.contactNo = contactNo;
 	}
 
-	public String getWhAdminId() {
+	public Integer getWhAdminId() {
 		return whAdminId;
 	}
 
-	public void setWhAdminId(String whAdminId) {
+	public void setWhAdminId(Integer whAdminId) {
 		this.whAdminId = whAdminId;
 	}
 
