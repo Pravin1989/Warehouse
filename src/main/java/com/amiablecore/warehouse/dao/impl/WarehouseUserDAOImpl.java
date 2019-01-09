@@ -6,6 +6,9 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.amiablecore.warehouse.beans.Category;
@@ -20,62 +23,71 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 
 	private static Logger logger = LoggerFactory.getLogger(WarehouseUserDAOImpl.class);
 
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	@Value(value = "${tablePrefix}")
+	private String tablePrefix;
+
 	@Override
-	public List<Category> retrieveCategories(String commodityId) {
+	public List<Category> retrieveCategories(Integer commodityId) {
 		// Need to retrieve cateryId and its name
-		List<Category> list = new ArrayList<Category>();
-		for (Map.Entry<Integer, List<Category>> commodity : WarehouseAdminDAOImpl.commodityCategories.entrySet()) {
-			if (commodity.getKey() == Integer.parseInt(commodityId)) {
-				logger.info("Categories : {}", commodity.getValue());
-				return commodity.getValue();
-			}
+		List<Category> categorieslist = new ArrayList<Category>();
+		StringBuilder selectQuery = new StringBuilder();
+		selectQuery.append("select * from ");
+		selectQuery.append(tablePrefix);
+		selectQuery.append("Category where commodity_id=?");
+		Object arguments[] = { commodityId };
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
+
+		for (Map<String, Object> row : rows) {
+			Category category = new Category();
+			category.setCategoryId((Integer) row.get("cat_id"));
+			category.setCategoryName((String) row.get("category_name"));
+			categorieslist.add(category);
 		}
-		return list;
+		logger.info("Categories Retrieved");
+		return categorieslist;
 	}
 
 	@Override
 	public List<Trader> retrieveTraders(String traderName) {
-		List<Trader> dblist = new ArrayList<Trader>();
-		List<Trader> list = new ArrayList<Trader>();
-		// for (Map.Entry<Integer, Trader> trader :
-		// WarehouseAdminDAOImpl.traders.entrySet()) {
-		// if (trader.getValue().getWhAdminId().equals(whAdminId)) {
-		// list.add(trader.getValue());
-		// logger.info("Trader ");
-		// }
-		// }
-
-//		Trader tr1 = new Trader("Pravin", "", 111);
-//		Trader tr2 = new Trader("Pranav", "", 112);
-//		Trader tr3 = new Trader("Dhananjay", "", 113);
-//		Trader tr4 = new Trader("Dj", "", 114);
-//
-//		dblist.add(tr1);
-//		dblist.add(tr2);
-//		dblist.add(tr3);
-//		dblist.add(tr4);
-//		logger.info("Traders  : {}", dblist);
-//		for (int i = 0; i < dblist.size(); i++) {
-//			Trader t = dblist.get(i);
-//			if (t.getTraderName().contains(traderName)) {
-//				list.add(t);
-//			}
-//		}
-		return list;
+		List<Trader> traderList = new ArrayList<Trader>();
+		StringBuilder selectQuery = new StringBuilder();
+		selectQuery.append("select * from ");
+		selectQuery.append(tablePrefix);
+		selectQuery.append("Trader where LOWER(trader_name) like '%" + traderName.toLowerCase() + "%'");
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString());
+		for (Map<String, Object> row : rows) {
+			Trader trader = new Trader();
+			trader.setTraderId((Integer) row.get("trader_id"));
+			trader.setTraderName((String) row.get("trader_name"));
+			trader.setTraderState((String) row.get("state"));
+			trader.setCity((String) row.get("city"));
+			trader.setTraderPinCode((String) row.get("pin_code"));
+			traderList.add(trader);
+		}
+		logger.info("Trader List Retrieved");
+		return traderList;
 	}
 
 	@Override
-	public List<Commodity> retrieveCommodities(String whAdminId) {
+	public List<Commodity> retrieveCommodities(Integer whAdminId) {
 		List<Commodity> commoditiesList = new ArrayList<>();
-		if (Integer.parseInt(whAdminId) == 1000) {
-			for (Map.Entry<Integer, Commodity> commodity : WarehouseAdminDAOImpl.commodities.entrySet()) {
-				Commodity com = new Commodity();
-				com.setCommodityId(commodity.getValue().getCommodityId());
-				com.setCommodityName(commodity.getValue().getCommodityName());
-				com.setWhAdminId(commodity.getValue().getWhAdminId());
-				commoditiesList.add(com);
-			}
+		StringBuilder selectQuery = new StringBuilder();
+		selectQuery.append("select * from ");
+		selectQuery.append(tablePrefix);
+		selectQuery.append("Commodity where whid=?");
+		Object arguments[] = { whAdminId };
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
+
+		for (Map<String, Object> row : rows) {
+			Commodity commodity = new Commodity();
+			commodity.setCommodityId((Integer) row.get("id"));
+			commodity.setCommodityName((String) row.get("name"));
+			commoditiesList.add(commodity);
 		}
+		logger.info("Commodities Retrieved");
 		return commoditiesList;
 	}
 
@@ -91,13 +103,11 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 
 	@Override
 	public String synchronizeInward(List<Inward> inwardList) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String synchronizeOutward(List<Outward> outwardList) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

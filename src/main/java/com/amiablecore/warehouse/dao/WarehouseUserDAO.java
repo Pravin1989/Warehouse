@@ -9,11 +9,11 @@ import com.amiablecore.warehouse.beans.Outward;
 import com.amiablecore.warehouse.beans.Trader;
 
 public interface WarehouseUserDAO {
-	public List<Category> retrieveCategories(String commodityId);
+	public List<Category> retrieveCategories(Integer commodityId);
 
 	public List<Trader> retrieveTraders(String traderName);
 
-	public List<Commodity> retrieveCommodities(String whAdminId);
+	public List<Commodity> retrieveCommodities(Integer whAdminId);
 
 	public Inward retrieveLotDetails(String lotName);
 

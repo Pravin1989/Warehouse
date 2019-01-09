@@ -4,9 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,26 +38,6 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 	private String tablePrefix;
 
 	private static Logger logger = LoggerFactory.getLogger(WarehouseAdminDAOImpl.class);
-
-	public static Map<Integer, Commodity> commodities = new HashMap<>();
-
-	public static Map<Integer, WarehouseUser> users = new HashMap<>();
-
-	public static Map<Integer, Category> categories = new HashMap<>();
-
-	public static Map<Integer, Trader> traders = new HashMap<>();
-
-	public static Map<Integer, List<Category>> commodityCategories = new HashMap<>();
-
-	private List<Category> categoriesList = new ArrayList<>();
-
-	private Integer categoryCounter = 1;
-
-	private Integer traderCounter = 10;
-
-	private Integer commodityCounter = 100;
-
-	private Integer userCounter = 1000;
 
 	@Override
 	public WarehouseUser createUser(WarehouseUser user) {
@@ -97,6 +74,7 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 			}
 			user.setUserId(newUserId);
 			user.setAlreadyPresent(false);
+			logger.info("User Created");
 			return user;
 		}
 		for (Map<String, Object> row : rows) {
@@ -108,6 +86,7 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 			user.setUserId((Integer) row.get("whuserid"));
 		}
 		user.setAlreadyPresent(true);
+		logger.info("User Already Present");
 		return user;
 	}
 
@@ -152,6 +131,7 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 			}
 			trader.setTraderId(newTraderId);
 			trader.setAlreadyPresent(false);
+			logger.info("Trader Created");
 			return trader;
 		}
 		for (Map<String, Object> row : rows) {
@@ -167,6 +147,7 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 			trader.setWhAdminId((Integer) row.get("wh_id"));
 		}
 		trader.setAlreadyPresent(true);
+		logger.info("Trader Already Present");
 		return trader;
 	}
 
@@ -212,6 +193,7 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 			}
 			commodity.setCommodityId(newCommodityId);
 			commodity.setAlreadyPresent(false);
+			logger.info("Commodity Created");
 			return commodity;
 		}
 		for (Map<String, Object> row : rows) {
@@ -219,6 +201,7 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 			commodity.setCommodityId((Integer) row.get("id"));
 		}
 		commodity.setAlreadyPresent(true);
+		logger.info("Commodity Already Present");
 		return commodity;
 	}
 
@@ -258,6 +241,7 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 			}
 			category.setCategoryId(newCategoryId);
 			category.setAlreadyPresent(false);
+			logger.info("Category Created");
 			return category;
 		}
 		for (Map<String, Object> row : rows) {
@@ -265,6 +249,7 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 			category.setCategoryId((Integer) row.get("cat_id"));
 		}
 		category.setAlreadyPresent(true);
+		logger.info("Category Already Present");
 		return category;
 	}
 }

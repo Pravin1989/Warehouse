@@ -20,7 +20,7 @@ public class WarehouseUserServiceImpl implements WarehouseUserService {
 	private WarehouseUserDAO warehouseUserDAO;
 
 	@Override
-	public List<Category> retrieveCategories(String commodityId) {
+	public List<Category> retrieveCategories(Integer commodityId) {
 		return warehouseUserDAO.retrieveCategories(commodityId);
 	}
 
@@ -30,7 +30,7 @@ public class WarehouseUserServiceImpl implements WarehouseUserService {
 	}
 
 	@Override
-	public List<Commodity> retrieveCommodities(String whAdminId) {
+	public List<Commodity> retrieveCommodities(Integer whAdminId) {
 		return warehouseUserDAO.retrieveCommodities(whAdminId);
 	}
 

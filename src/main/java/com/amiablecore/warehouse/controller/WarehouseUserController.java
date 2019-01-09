@@ -24,7 +24,7 @@ public class WarehouseUserController {
 	private WarehouseUserService warehouseUserService;
 
 	@GetMapping(value = "/category/retrieveCategories/{commodityId}")
-	public ResponseEntity<List<Category>> retrieveCategories(@PathVariable("commodityId") String commodityId) {
+	public ResponseEntity<List<Category>> retrieveCategories(@PathVariable("commodityId") Integer commodityId) {
 		List<Category> categories = warehouseUserService.retrieveCategories(commodityId);
 		return new ResponseEntity<List<Category>>(categories, HttpStatus.OK);
 	}
@@ -36,7 +36,7 @@ public class WarehouseUserController {
 	}
 
 	@GetMapping(value = "/commodity/retrieveCommodities/{whAdminId}")
-	public ResponseEntity<List<Commodity>> retrieveCommodities(@PathVariable("whAdminId") String whAdminId) {
+	public ResponseEntity<List<Commodity>> retrieveCommodities(@PathVariable("whAdminId") Integer whAdminId) {
 		List<Commodity> commodities = warehouseUserService.retrieveCommodities(whAdminId);
 		return new ResponseEntity<List<Commodity>>(commodities, HttpStatus.OK);
 	}
