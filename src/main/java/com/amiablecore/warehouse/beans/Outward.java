@@ -12,6 +12,15 @@ public class Outward {
 	private String outwardDate;
 	private Integer totalQuantity;
 	private Double totalWeight;
+	private Double bagWeight;
+
+	public void setBagWeight(Double bagWeight) {
+		this.bagWeight = bagWeight;
+	}
+
+	public Double getBagWeight() {
+		return bagWeight;
+	}
 
 	public String getOutwardDate() {
 		return outwardDate;

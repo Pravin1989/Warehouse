@@ -1,19 +1,38 @@
 package com.amiablecore.warehouse.beans;
+
 /**
  * @author Pravin
  *
  */
 public class Inward {
-	private String inwardId;
+	private Integer inwardId;
 	private String inwardDate;
 	private String lotName;
-	private String traderId;
+	private Integer traderId;
 	private Integer commodityId;
 	private Integer categoryId;
 	private Integer totalQuantity;
 	private Double weightPerBag;
 	private Double totalWeight;
 	private String physicalAddress;
+	private Integer whAdminId;
+	private Integer whUserId;
+
+	public void setWhAdminId(Integer whAdminId) {
+		this.whAdminId = whAdminId;
+	}
+
+	public void setWhUserId(Integer whUserId) {
+		this.whUserId = whUserId;
+	}
+
+	public Integer getWhAdminId() {
+		return whAdminId;
+	}
+
+	public Integer getWhUserId() {
+		return whUserId;
+	}
 
 	public String getLotName() {
 		return lotName;
@@ -23,7 +42,7 @@ public class Inward {
 		this.lotName = lotName;
 	}
 
-	public void setInwardId(String inwardId) {
+	public void setInwardId(Integer inwardId) {
 		this.inwardId = inwardId;
 	}
 
@@ -31,7 +50,7 @@ public class Inward {
 		this.inwardDate = inwardDate;
 	}
 
-	public void setTraderId(String traderId) {
+	public void setTraderId(Integer traderId) {
 		this.traderId = traderId;
 	}
 
@@ -59,7 +78,7 @@ public class Inward {
 		this.physicalAddress = physicalAddress;
 	}
 
-	public String getInwardId() {
+	public Integer getInwardId() {
 		return inwardId;
 	}
 
@@ -67,7 +86,7 @@ public class Inward {
 		return inwardDate;
 	}
 
-	public String getTraderId() {
+	public Integer getTraderId() {
 		return traderId;
 	}
 

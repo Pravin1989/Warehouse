@@ -19,7 +19,7 @@ public interface WarehouseUserDAO {
 
 	public List<Inward> retrieveLotList(String lotName);
 
-	public String synchronizeInward(List<Inward> inwardList);
+	public void synchronizeInward(List<Inward> inwardList, Integer whUserId);
 
 	public String synchronizeOutward(List<Outward> outwardList);
 }

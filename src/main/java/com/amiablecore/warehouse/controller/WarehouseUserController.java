@@ -31,8 +31,8 @@ public class WarehouseUserController {
 
 	@GetMapping(value = "/trader/retrieveTraders/{traderName}")
 	public ResponseEntity<List<Trader>> retrieveTraderDetails(@PathVariable("traderName") String traderName) {
-		List<Trader> categories = warehouseUserService.retrieveTraders(traderName);
-		return new ResponseEntity<List<Trader>>(categories, HttpStatus.OK);
+		List<Trader> traders = warehouseUserService.retrieveTraders(traderName);
+		return new ResponseEntity<List<Trader>>(traders, HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/commodity/retrieveCommodities/{whAdminId}")
@@ -43,8 +43,8 @@ public class WarehouseUserController {
 
 	@GetMapping(value = "/lots/retrieveLotList/{lotName}")
 	public ResponseEntity<List<Inward>> retrieveLotList(@PathVariable("lotName") String lotName) {
-		List<Inward> commodities = warehouseUserService.retrieveLotList(lotName);
-		return new ResponseEntity<List<Inward>>(commodities, HttpStatus.OK);
+		List<Inward> lotList = warehouseUserService.retrieveLotList(lotName);
+		return new ResponseEntity<List<Inward>>(lotList, HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/lots/retrieveLotDetails/{lotId}")
@@ -54,8 +54,9 @@ public class WarehouseUserController {
 	}
 
 	@PostMapping(value = "/synchronize/inward/{whUserId}")
-	public ResponseEntity<String> synchronizeInward(@RequestBody List<Inward> inwardList) {
-		return new ResponseEntity<String>("", HttpStatus.OK);
+	public ResponseEntity<String> synchronizeInward(@RequestBody List<Inward> inwardList, @PathVariable Integer whUserId) {
+		warehouseUserService.synchronizeInward(inwardList, whUserId);
+		return new ResponseEntity<String>("Success", HttpStatus.OK);
 	}
 	
 	@PostMapping(value = "/synchronize/outward/{whUserId}")

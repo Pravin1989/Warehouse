@@ -45,8 +45,8 @@ public class WarehouseUserServiceImpl implements WarehouseUserService {
 	}
 
 	@Override
-	public String synchronizeInward(List<Inward> inwardList) {
-		return warehouseUserDAO.synchronizeInward(inwardList);
+	public void synchronizeInward(List<Inward> inwardList, Integer whUserId) {
+		 warehouseUserDAO.synchronizeInward(inwardList, whUserId);
 	}
 
 	@Override
