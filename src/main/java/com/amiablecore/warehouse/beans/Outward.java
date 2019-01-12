@@ -2,80 +2,89 @@ package com.amiablecore.warehouse.beans;
 
 /**
  * @author Pravin
- *
  */
 public class Outward {
-	private Integer outwardId;
-	private Integer outwardLotId;
-	private Integer whAdminId;
-	private Integer whUserId;
-	private String outwardDate;
-	private Integer totalQuantity;
-	private Double totalWeight;
-	private Double bagWeight;
+    private Integer outwardId;
+    private Integer traderId;
+    private Integer inwardId;
+    private Integer whAdminId;
+    private Integer whUserId;
+    private String outwardDate;
+    private Integer totalQuantity;
+    private Double totalWeight;
+    private Double bagWeight;
 
-	public void setBagWeight(Double bagWeight) {
-		this.bagWeight = bagWeight;
-	}
+    public void setTraderId(Integer traderId) {
+        this.traderId = traderId;
+    }
 
-	public Double getBagWeight() {
-		return bagWeight;
-	}
+    public Integer getTraderId() {
 
-	public String getOutwardDate() {
-		return outwardDate;
-	}
+        return traderId;
+    }
 
-	public void setOutwardDate(String outwardDate) {
-		this.outwardDate = outwardDate;
-	}
+    public void setInwardId(Integer inwardId) {
+        this.inwardId = inwardId;
+    }
 
-	public Integer getTotalQuantity() {
-		return totalQuantity;
-	}
+    public Integer getInwardId() {
+        return inwardId;
+    }
 
-	public void setTotalQuantity(Integer totalQuantity) {
-		this.totalQuantity = totalQuantity;
-	}
+    public void setBagWeight(Double bagWeight) {
+        this.bagWeight = bagWeight;
+    }
 
-	public Double getTotalWeight() {
-		return totalWeight;
-	}
+    public Double getBagWeight() {
+        return bagWeight;
+    }
 
-	public void setTotalWeight(Double totalWeight) {
-		this.totalWeight = totalWeight;
-	}
+    public String getOutwardDate() {
+        return outwardDate;
+    }
 
-	public Integer getOutwardId() {
-		return outwardId;
-	}
+    public void setOutwardDate(String outwardDate) {
+        this.outwardDate = outwardDate;
+    }
 
-	public void setOutwardId(Integer outwardId) {
-		this.outwardId = outwardId;
-	}
+    public Integer getTotalQuantity() {
+        return totalQuantity;
+    }
 
-	public Integer getOutwardLotId() {
-		return outwardLotId;
-	}
+    public void setTotalQuantity(Integer totalQuantity) {
+        this.totalQuantity = totalQuantity;
+    }
 
-	public void setOutwardLotId(Integer outwardLotId) {
-		this.outwardLotId = outwardLotId;
-	}
+    public Double getTotalWeight() {
+        return totalWeight;
+    }
 
-	public Integer getWhAdminId() {
-		return whAdminId;
-	}
+    public void setTotalWeight(Double totalWeight) {
+        this.totalWeight = totalWeight;
+    }
 
-	public void setWhAdminId(Integer whAdminId) {
-		this.whAdminId = whAdminId;
-	}
+    public Integer getOutwardId() {
+        return outwardId;
+    }
 
-	public Integer getWhUserId() {
-		return whUserId;
-	}
+    public void setOutwardId(Integer outwardId) {
+        this.outwardId = outwardId;
+    }
 
-	public void setWhUserId(Integer whUserId) {
-		this.whUserId = whUserId;
-	}
+    public Integer getWhAdminId() {
+        return whAdminId;
+    }
+
+    public void setWhAdminId(Integer whAdminId) {
+        this.whAdminId = whAdminId;
+    }
+
+    public Integer getWhUserId() {
+        return whUserId;
+    }
+
+    public void setWhUserId(Integer whUserId) {
+        this.whUserId = whUserId;
+    }
 
 }

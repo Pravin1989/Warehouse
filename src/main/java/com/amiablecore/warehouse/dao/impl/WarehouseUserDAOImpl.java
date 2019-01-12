@@ -105,10 +105,12 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		selectQuery.append(tablePrefix);
 		selectQuery.append("Inward where inward_id=" + lotId);
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString());
-		
+
 		if (rows.size() != 0) {
-			BigDecimal totWeight=(BigDecimal)rows.get(0).get("total_weight");
-			BigDecimal bagWeight=(BigDecimal)rows.get(0).get("total_weight");
+			BigDecimal totWeight = (BigDecimal) rows.get(0).get("total_weight");
+			BigDecimal bagWeight = (BigDecimal) rows.get(0).get("Weight_Per_Bag");
+			inward.setInwardId((Integer) rows.get(0).get("inward_id"));
+			inward.setTraderId((Integer) rows.get(0).get("trader_id"));
 			inward.setTotalWeight(totWeight.doubleValue());
 			inward.setTotalQuantity((Integer) rows.get(0).get("Total_Quntity"));
 			inward.setWeightPerBag(bagWeight.doubleValue());
@@ -137,7 +139,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 
 	@Override
 	@Transactional
-	public void synchronizeInward(List<Inward> inwardList, Integer whUserId) {
+	public void synchronizeInward(List<Inward> inwardList) {
 		StringBuilder insertQuery = new StringBuilder();
 		insertQuery.append("INSERT INTO ");
 		insertQuery.append(tablePrefix);
@@ -166,6 +168,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 					ps.setInt(11, inward.getWhAdminId());
 					ps.setInt(12, inward.getWhUserId());
 				} catch (Exception e) {
+					logger.error("Failed To Inward :", e);
 				}
 			}
 
@@ -177,7 +180,41 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 	}
 
 	@Override
-	public String synchronizeOutward(List<Outward> outwardList) {
-		return null;
+	@Transactional
+	public void synchronizeOutward(List<Outward> outwardList) {
+		StringBuilder insertQuery = new StringBuilder();
+		insertQuery.append("INSERT INTO ");
+		insertQuery.append(tablePrefix);
+		insertQuery.append("Outward(Inward_Id, Weight_Per_Bag, Total_Quantity, total_weight, Outward_Date, Is_Sync, ");
+		insertQuery.append("Trader_Id, Wh_Admin_Id, wh_User_Id)");
+		insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?)");
+		jdbcTemplate.batchUpdate(insertQuery.toString(), new BatchPreparedStatementSetter() {
+			@Override
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
+				Outward outward = outwardList.get(i);
+				java.sql.Date sqlStartDate;
+				SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy");
+				try {
+					java.util.Date date = sdf1.parse(outward.getOutwardDate());
+					sqlStartDate = new java.sql.Date(date.getTime());
+					ps.setInt(1, outward.getInwardId());
+					ps.setDouble(2, outward.getBagWeight());
+					ps.setInt(3, outward.getTotalQuantity());
+					ps.setDouble(4, outward.getTotalWeight());
+					ps.setDate(5, sqlStartDate);
+					ps.setBoolean(6, true);
+					ps.setInt(7, outward.getTraderId());
+					ps.setInt(8, outward.getWhAdminId());
+					ps.setInt(9, outward.getWhUserId());
+				} catch (Exception e) {
+					logger.error("Failed To Outward :", e);
+				}
+			}
+
+			@Override
+			public int getBatchSize() {
+				return outwardList.size();
+			}
+		});
 	}
 }

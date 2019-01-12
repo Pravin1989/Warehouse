@@ -19,7 +19,7 @@ public interface WarehouseUserService {
 	
 	public List<Inward> retrieveLotList(String lotName);
 	
-	public void synchronizeInward(List<Inward> inwardList, Integer whUserId);
+	public void synchronizeInward(List<Inward> inwardList);
 	
-	public String synchronizeOutward(List<Outward> outwardList);
+	public void synchronizeOutward(List<Outward> outwardList);
 }
