@@ -48,7 +48,7 @@ public class WarehouseUserController {
 	}
 
 	@GetMapping(value = "/lots/retrieveLotDetails/{lotId}")
-	public ResponseEntity<Inward> retrieveLotDetails(@PathVariable("lotId") String lotId) {
+	public ResponseEntity<Inward> retrieveLotDetails(@PathVariable("lotId") Integer lotId) {
 		Inward inward = warehouseUserService.retrieveLotDetails(lotId);
 		return new ResponseEntity<Inward>(inward, HttpStatus.OK);
 	}

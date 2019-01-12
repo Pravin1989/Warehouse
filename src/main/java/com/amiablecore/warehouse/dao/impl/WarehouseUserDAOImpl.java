@@ -1,10 +1,8 @@
 package com.amiablecore.warehouse.dao.impl;
 
-import java.sql.Connection;
-import java.sql.Date;
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -103,8 +98,23 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 	}
 
 	@Override
-	public Inward retrieveLotDetails(String lotId) {
-		return null;
+	public Inward retrieveLotDetails(Integer lotId) {
+		Inward inward = new Inward();
+		StringBuilder selectQuery = new StringBuilder();
+		selectQuery.append("select * from ");
+		selectQuery.append(tablePrefix);
+		selectQuery.append("Inward where inward_id=" + lotId);
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString());
+		
+		if (rows.size() != 0) {
+			BigDecimal totWeight=(BigDecimal)rows.get(0).get("total_weight");
+			BigDecimal bagWeight=(BigDecimal)rows.get(0).get("total_weight");
+			inward.setTotalWeight(totWeight.doubleValue());
+			inward.setTotalQuantity((Integer) rows.get(0).get("Total_Quntity"));
+			inward.setWeightPerBag(bagWeight.doubleValue());
+		}
+		logger.info("Lot Details Retrieved");
+		return inward;
 	}
 
 	@Override
@@ -117,8 +127,8 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString());
 		for (Map<String, Object> row : rows) {
 			Inward inward = new Inward();
-			inward.setInwardId((Integer)row.get("inward_id"));
-			inward.setLotName((String)row.get("lot_name"));
+			inward.setInwardId((Integer) row.get("inward_id"));
+			inward.setLotName((String) row.get("lot_name"));
 			inwardList.add(inward);
 		}
 		logger.info("Lot List Retrieved");

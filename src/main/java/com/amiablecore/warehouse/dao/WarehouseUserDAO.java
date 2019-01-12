@@ -15,7 +15,7 @@ public interface WarehouseUserDAO {
 
 	public List<Commodity> retrieveCommodities(Integer whAdminId);
 
-	public Inward retrieveLotDetails(String lotName);
+	public Inward retrieveLotDetails(Integer lotName);
 
 	public List<Inward> retrieveLotList(String lotName);
 

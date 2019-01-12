@@ -35,7 +35,7 @@ public class WarehouseUserServiceImpl implements WarehouseUserService {
 	}
 
 	@Override
-	public Inward retrieveLotDetails(String lotId) {
+	public Inward retrieveLotDetails(Integer lotId) {
 		return warehouseUserDAO.retrieveLotDetails(lotId);
 	}
 

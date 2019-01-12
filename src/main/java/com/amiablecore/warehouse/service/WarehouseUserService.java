@@ -15,7 +15,7 @@ public interface WarehouseUserService {
 	
 	public List<Commodity> retrieveCommodities(Integer whAdminId);
 	
-	public Inward retrieveLotDetails(String lotId);
+	public Inward retrieveLotDetails(Integer lotId);
 	
 	public List<Inward> retrieveLotList(String lotName);
 	
