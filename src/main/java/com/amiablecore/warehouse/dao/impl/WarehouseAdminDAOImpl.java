@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -251,5 +252,45 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 		category.setAlreadyPresent(true);
 		logger.info("Category Already Present");
 		return category;
+	}
+
+	@Override
+	public List<Commodity> retrieveCommodities(Integer whAdminId) {
+		List<Commodity> commoditiesList = new ArrayList<>();
+		StringBuilder selectQuery = new StringBuilder();
+		selectQuery.append("select * from ");
+		selectQuery.append(tablePrefix);
+		selectQuery.append("Commodity where whid=? limit 10");
+		Object arguments[] = { whAdminId };
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
+
+		for (Map<String, Object> row : rows) {
+			Commodity commodity = new Commodity();
+			commodity.setCommodityId((Integer) row.get("id"));
+			commodity.setCommodityName((String) row.get("name"));
+			commoditiesList.add(commodity);
+		}
+		logger.info("Commodities Retrieved");
+		return commoditiesList;
+	}
+
+	@Override
+	public List<Category> retrieveCategories(Integer commodityId) {
+		List<Category> categorieslist = new ArrayList<Category>();
+		StringBuilder selectQuery = new StringBuilder();
+		selectQuery.append("select * from ");
+		selectQuery.append(tablePrefix);
+		selectQuery.append("Category where commodity_id=? limit 10");
+		Object arguments[] = { commodityId };
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
+
+		for (Map<String, Object> row : rows) {
+			Category category = new Category();
+			category.setCategoryId((Integer) row.get("cat_id"));
+			category.setCategoryName((String) row.get("category_name"));
+			categorieslist.add(category);
+		}
+		logger.info("Categories Retrieved");
+		return categorieslist;
 	}
 }

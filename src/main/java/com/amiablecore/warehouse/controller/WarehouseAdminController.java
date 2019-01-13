@@ -1,8 +1,11 @@
 package com.amiablecore.warehouse.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,14 +37,26 @@ public class WarehouseAdminController {
 
 	@PostMapping(value = "/commodity/add")
 	public ResponseEntity<Commodity> addCommodity(@RequestBody Commodity commodity) {
-		Commodity newTrader = warehouseAdminService.addCommodity(commodity);
-		return new ResponseEntity<Commodity>(newTrader, HttpStatus.CREATED);
+		Commodity newCommodity = warehouseAdminService.addCommodity(commodity);
+		return new ResponseEntity<Commodity>(newCommodity, HttpStatus.CREATED);
 	}
 
 	@PostMapping(value = "/category/add/{commodityId}")
-	public ResponseEntity<Category> addCategory(@RequestBody Category category,@PathVariable String commodityId) {
-		Category newTrader = warehouseAdminService.addCategory(category, commodityId);
-		return new ResponseEntity<Category>(newTrader, HttpStatus.CREATED);
+	public ResponseEntity<Category> addCategory(@RequestBody Category category,
+			@PathVariable("commodityId") String commodityId) {
+		Category newcategory = warehouseAdminService.addCategory(category, commodityId);
+		return new ResponseEntity<Category>(newcategory, HttpStatus.CREATED);
 	}
 
+	@GetMapping(value = "/commodity/retrieve/admin/{whAdminId}")
+	public ResponseEntity<List<Commodity>> retrieveCommodities(@PathVariable("whAdminId") Integer whAdminId) {
+		List<Commodity> commodityList = warehouseAdminService.retrieveCommodities(whAdminId);
+		return new ResponseEntity<List<Commodity>>(commodityList, HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/category/retrieveCategories/admin/{commodityId}")
+	public ResponseEntity<List<Category>> retrieveCategories(@PathVariable("commodityId") Integer commodityId) {
+		List<Category> categories = warehouseAdminService.retrieveCategories(commodityId);
+		return new ResponseEntity<List<Category>>(categories, HttpStatus.OK);
+	}
 }

@@ -38,7 +38,17 @@ public class WarehouseAdminServiceImpl implements WarehouseAdminService {
 	}
 
 	@Override
-	public Category addCategory(Category category,String commodityId) {
+	public Category addCategory(Category category, String commodityId) {
 		return warehouseAdminDao.addCategory(category, commodityId);
+	}
+
+	@Override
+	public List<Commodity> retrieveCommodities(Integer whAdminId) {
+		return warehouseAdminDao.retrieveCommodities(whAdminId);
+	}
+
+	@Override
+	public List<Category> retrieveCategories(Integer commodityId) {
+		return warehouseAdminDao.retrieveCategories(commodityId);
 	}
 }

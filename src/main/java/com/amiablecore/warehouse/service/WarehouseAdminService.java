@@ -21,4 +21,7 @@ public interface WarehouseAdminService {
 
 	public Category addCategory(Category category, String commodityId);
 
+	public List<Commodity> retrieveCommodities(Integer whAdminId);
+
+	public List<Category> retrieveCategories(Integer commodityId);
 }
