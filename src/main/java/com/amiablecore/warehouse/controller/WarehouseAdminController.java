@@ -54,7 +54,7 @@ public class WarehouseAdminController {
 		return new ResponseEntity<List<Commodity>>(commodityList, HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/category/retrieveCategories/admin/{commodityId}")
+	@GetMapping(value = "/category/retrieve/admin/{commodityId}")
 	public ResponseEntity<List<Category>> retrieveCategories(@PathVariable("commodityId") Integer commodityId) {
 		List<Category> categories = warehouseAdminService.retrieveCategories(commodityId);
 		return new ResponseEntity<List<Category>>(categories, HttpStatus.OK);

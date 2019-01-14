@@ -41,6 +41,7 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 	private static Logger logger = LoggerFactory.getLogger(WarehouseAdminDAOImpl.class);
 
 	@Override
+	@Transactional
 	public WarehouseUser createUser(WarehouseUser user) {
 		StringBuilder selectQuery = new StringBuilder();
 		selectQuery.append("select * from ");
