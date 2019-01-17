@@ -34,9 +34,9 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 
 	private List<Inward> inwardList;
 
-	private List<Inward> updateToIwnardCompleteList;
+	private List<Inward> updateToInwardCompleteList;
 
-	private List<Inward> updateToIwnardPartiallyCompleteList;
+	private List<Inward> updateToInwardPartiallyCompleteList;
 
 	@Value(value = "${tablePrefix}")
 	private String tablePrefix;
@@ -231,8 +231,8 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		selectQuery.append(tablePrefix);
 		selectQuery.append("Inward where inward_id in(");
 		inwardList = new ArrayList<>();
-		updateToIwnardCompleteList = new ArrayList<>();
-		updateToIwnardPartiallyCompleteList = new ArrayList<>();
+		updateToInwardCompleteList = new ArrayList<>();
+		updateToInwardPartiallyCompleteList = new ArrayList<>();
 		Object arguments[] = new Object[outwardList.size()];
 		for (int index = 0; index < outwardList.size(); index++) {
 			selectQuery.append("?");
@@ -254,22 +254,25 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		logger.info(" updateInwardDetails OutwardList Size : {}", outwardList.size());
 		for (int i = 0; i < outwardList.size(); i++) {
 			Outward out = outwardList.get(i);
-			Inward in = inwardList.get(i);
-			if (in.getInwardId() == out.getInwardId() && in.getTotalQuantity() == out.getTotalQuantity()
-					&& in.getTotalWeight().equals(out.getTotalWeight())) {
-				updateToIwnardCompleteList.add(in);
-				logger.info("updateToIwnardCompleteList");
-			}
-			if (in.getInwardId() == out.getInwardId() && out.getTotalQuantity() < in.getTotalQuantity()) {
-				Inward inUpdate = new Inward();
-				inUpdate.setInwardId(in.getInwardId());
-				inUpdate.setTotalWeight(out.getTotalWeight());
-				inUpdate.setTotalQuantity(out.getTotalQuantity());
-				updateToIwnardPartiallyCompleteList.add(inUpdate);
-				logger.info("updateToIwnardPartiallyCompleteList");
+			if (inwardList.contains(out)) {
+				Inward in = inwardList.get(i);
+				if (in.getTotalQuantity() == out.getTotalQuantity()
+						&& in.getTotalWeight().equals(out.getTotalWeight())) {
+					updateToInwardCompleteList.add(in);
+					logger.info("updateToIwnardCompleteList");
+				}
+				if (out.getTotalQuantity() < in.getTotalQuantity()) {
+					Inward inUpdate = new Inward();
+					inUpdate.setInwardId(in.getInwardId());
+					inUpdate.setTotalWeight(in.getTotalWeight() - out.getTotalWeight());
+					inUpdate.setTotalQuantity(in.getTotalQuantity() - out.getTotalQuantity());
+					updateToInwardPartiallyCompleteList.add(inUpdate);
+					logger.info("updateToIwnardPartiallyCompleteList");
+				}
+
 			}
 		}
-		if (updateToIwnardCompleteList.size() != 0) {
+		if (updateToInwardCompleteList.size() != 0) {
 			StringBuilder updateCompleteQuery = new StringBuilder();
 			updateCompleteQuery.append("UPDATE ");
 			updateCompleteQuery.append(tablePrefix);
@@ -277,7 +280,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 			jdbcTemplate.batchUpdate(updateCompleteQuery.toString(), new BatchPreparedStatementSetter() {
 				@Override
 				public void setValues(PreparedStatement ps, int i) throws SQLException {
-					Inward inward = updateToIwnardCompleteList.get(i);
+					Inward inward = updateToInwardCompleteList.get(i);
 					try {
 						ps.setBoolean(1, true);
 						ps.setInt(2, inward.getInwardId());
@@ -288,13 +291,13 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 
 				@Override
 				public int getBatchSize() {
-					return outwardList.size();
+					return updateToInwardCompleteList.size();
 				}
 			});
 			logger.info("updateToIwnardCompleteList Updated");
 		}
 
-		if (updateToIwnardPartiallyCompleteList.size() != 0) {
+		if (updateToInwardPartiallyCompleteList.size() != 0) {
 			StringBuilder updatepartialQuery = new StringBuilder();
 			updatepartialQuery.append("UPDATE ");
 			updatepartialQuery.append(tablePrefix);
@@ -302,7 +305,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 			jdbcTemplate.batchUpdate(updatepartialQuery.toString(), new BatchPreparedStatementSetter() {
 				@Override
 				public void setValues(PreparedStatement ps, int i) throws SQLException {
-					Inward inward = updateToIwnardPartiallyCompleteList.get(i);
+					Inward inward = updateToInwardPartiallyCompleteList.get(i);
 					try {
 						ps.setInt(1, inward.getTotalQuantity());
 						ps.setDouble(2, inward.getTotalWeight());
@@ -314,7 +317,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 
 				@Override
 				public int getBatchSize() {
-					return outwardList.size();
+					return updateToInwardPartiallyCompleteList.size();
 				}
 			});
 			logger.info("updateToIwnardPartiallyCompleteList Updated");

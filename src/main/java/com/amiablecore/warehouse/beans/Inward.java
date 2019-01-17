@@ -4,7 +4,7 @@ package com.amiablecore.warehouse.beans;
  * @author Pravin
  *
  */
-public class Inward {
+public class Inward implements Comparable<Inward> {
 	private Integer inwardId;
 	private String inwardDate;
 	private String lotName;
@@ -114,4 +114,25 @@ public class Inward {
 		return physicalAddress;
 	}
 
+	@Override
+	public int hashCode() {
+		return this.inwardId;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this) {
+			return true;
+		}
+		if (!(obj instanceof Outward)) {
+			return false;
+		}
+		Inward in = (Inward) obj;
+		return in.inwardId.equals(this.inwardId);
+	}
+
+	@Override
+	public int compareTo(Inward in) {
+		return this.inwardId.compareTo(in.getInwardId());
+	}
 }
