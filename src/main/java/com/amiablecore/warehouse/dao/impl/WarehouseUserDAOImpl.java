@@ -256,7 +256,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 			Outward out = outwardList.get(i);
 			if (inwardList.contains(out)) {
 				Inward in = inwardList.get(i);
-				if (in.getTotalQuantity() == out.getTotalQuantity()
+				if (in.getTotalQuantity().equals(out.getTotalQuantity())
 						&& in.getTotalWeight().equals(out.getTotalWeight())) {
 					updateToInwardCompleteList.add(in);
 					logger.info("updateToIwnardCompleteList");
