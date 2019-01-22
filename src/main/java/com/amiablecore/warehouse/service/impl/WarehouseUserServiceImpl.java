@@ -2,6 +2,8 @@ package com.amiablecore.warehouse.service.impl;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ import com.amiablecore.warehouse.service.WarehouseUserService;
 @Service("warehouseUserService")
 public class WarehouseUserServiceImpl implements WarehouseUserService {
 
+	private static Logger logger = LoggerFactory.getLogger(WarehouseUserServiceImpl.class);
+	
 	@Autowired
 	private WarehouseUserDAO warehouseUserDAO;
 
@@ -45,12 +49,13 @@ public class WarehouseUserServiceImpl implements WarehouseUserService {
 	}
 
 	@Override
-	public void synchronizeInward(List<Inward> inwardList) {
-		warehouseUserDAO.synchronizeInward(inwardList);
+	public Inward storeInwardDetails(Inward inward) {
+		logger.info("Inward Lot Service :");
+		return warehouseUserDAO.storeInwardDetails(inward);
 	}
 
 	@Override
-	public void synchronizeOutward(List<Outward> outwardList) {
-		warehouseUserDAO.synchronizeOutward(outwardList);
+	public Outward storeOutwardDetails(Outward outward) {
+		return warehouseUserDAO.storeOutwardDetails(outward);
 	}
 }

@@ -114,22 +114,22 @@ public class Inward implements Comparable<Inward> {
 		return physicalAddress;
 	}
 
-	@Override
-	public int hashCode() {
-		return this.inwardId;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == this) {
-			return true;
-		}
-		if (!(obj instanceof Outward)) {
-			return false;
-		}
-		Inward in = (Inward) obj;
-		return in.inwardId.equals(this.inwardId);
-	}
+//	@Override
+//	public int hashCode() {
+//		return this.inwardId;
+//	}
+//
+//	@Override
+//	public boolean equals(Object obj) {
+//		if (obj == this) {
+//			return true;
+//		}
+//		if (!(obj instanceof Outward)) {
+//			return false;
+//		}
+//		Inward in = (Inward) obj;
+//		return in.inwardId.equals(this.inwardId);
+//	}
 
 	@Override
 	public int compareTo(Inward in) {

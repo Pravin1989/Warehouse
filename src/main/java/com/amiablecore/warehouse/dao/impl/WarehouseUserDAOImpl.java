@@ -1,8 +1,10 @@
 package com.amiablecore.warehouse.dao.impl;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,9 +39,9 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 
 	private List<Inward> inwardList;
 
-	private List<Inward> updateToInwardCompleteList;
+	private Inward updateToInwardComplete;
 
-	private List<Inward> updateToInwardPartiallyCompleteList;
+	private Inward updateToInwardPartiallyComplete;
 
 	@Value(value = "${tablePrefix}")
 	private String tablePrefix;
@@ -145,59 +150,72 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 
 	@Override
 	@Transactional
-	public void synchronizeInward(List<Inward> inwardList) {
+	public Inward storeInwardDetails(Inward inward) {
+		logger.info("Inward Lot Adding :");
 		StringBuilder insertQuery = new StringBuilder();
 		insertQuery.append("INSERT INTO ");
 		insertQuery.append(tablePrefix);
-		insertQuery.append("Inward( Weight_Per_Bag, Total_Quntity, total_weight, Inward_Date, Is_Sync, ");
+		insertQuery.append("Inward( Weight_Per_Bag, Total_Quantity, total_weight, Inward_Date, ");
 		insertQuery.append("Physical_Address, Lot_Name, Comodity_Id, Category_Id, Trader_Id, Wh_Admin_Id, wh_User_Id)");
-		insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
-		jdbcTemplate.batchUpdate(insertQuery.toString(), new BatchPreparedStatementSetter() {
+		insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?,?,?)");
+		KeyHolder holder = new GeneratedKeyHolder();
+		jdbcTemplate.update(new PreparedStatementCreator() {
 			@Override
-			public void setValues(PreparedStatement ps, int i) throws SQLException {
-				Inward inward = inwardList.get(i);
-				java.sql.Date sqlStartDate;
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				PreparedStatement ps = connection.prepareStatement(insertQuery.toString(),
+						Statement.RETURN_GENERATED_KEYS);
+
 				SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy");
 				try {
 					java.util.Date date = sdf1.parse(inward.getInwardDate());
+					java.sql.Date sqlStartDate;
 					sqlStartDate = new java.sql.Date(date.getTime());
 					ps.setDouble(1, inward.getWeightPerBag());
 					ps.setInt(2, inward.getTotalQuantity());
-					ps.setDouble(3, inward.getTotalWeight());
+					if (inward.getTotalWeight() != null)
+						ps.setDouble(3, inward.getTotalWeight());
+					else
+						ps.setDouble(3, -1);
 					ps.setDate(4, sqlStartDate);
-					ps.setBoolean(5, true);
-					ps.setString(6, inward.getPhysicalAddress());
-					ps.setString(7, inward.getLotName());
-					ps.setInt(8, inward.getCommodityId());
-					ps.setInt(9, inward.getCategoryId());
-					ps.setInt(10, inward.getTraderId());
-					ps.setInt(11, inward.getWhAdminId());
-					ps.setInt(12, inward.getWhUserId());
+					ps.setString(5, inward.getPhysicalAddress());
+					ps.setString(6, inward.getLotName());
+					ps.setInt(7, inward.getCommodityId());
+					ps.setInt(8, inward.getCategoryId());
+					ps.setInt(9, inward.getTraderId());
+					ps.setInt(10, inward.getWhAdminId());
+					ps.setInt(11, inward.getWhUserId());
 				} catch (Exception e) {
 					logger.error("Failed To Inward :", e);
 				}
+				return ps;
 			}
+		}, holder);
 
-			@Override
-			public int getBatchSize() {
-				return inwardList.size();
-			}
-		});
+		Integer newlyAddedInwardId = 0;
+		if (holder.getKeys().size() > 1) {
+			newlyAddedInwardId = (Integer) holder.getKeys().get("inward_id");
+		}
+		Inward lot = new Inward();
+		lot.setInwardId(newlyAddedInwardId);
+		logger.info("Inward Lot Added :");
+		return lot;
 	}
 
 	@Override
 	@Transactional
-	public void synchronizeOutward(List<Outward> outwardList) {
+	public Outward storeOutwardDetails(Outward outward) {
 		StringBuilder insertQuery = new StringBuilder();
 		insertQuery.append("INSERT INTO ");
 		insertQuery.append(tablePrefix);
-		insertQuery.append("Outward(Inward_Id, Weight_Per_Bag, Total_Quantity, total_weight, Outward_Date, Is_Sync, ");
+		insertQuery.append("Outward(Inward_Id, Weight_Per_Bag, Total_Quantity, total_weight, Outward_Date, ");
 		insertQuery.append("Trader_Id, Wh_Admin_Id, wh_User_Id)");
-		insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?)");
-		jdbcTemplate.batchUpdate(insertQuery.toString(), new BatchPreparedStatementSetter() {
+		insertQuery.append("VALUES(?,?,?,?,?,?,?,?)");
+		KeyHolder holder = new GeneratedKeyHolder();
+		jdbcTemplate.update(new PreparedStatementCreator() {
 			@Override
-			public void setValues(PreparedStatement ps, int i) throws SQLException {
-				Outward outward = outwardList.get(i);
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				PreparedStatement ps = connection.prepareStatement(insertQuery.toString(),
+						Statement.RETURN_GENERATED_KEYS);
 				java.sql.Date sqlStartDate;
 				SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy");
 				try {
@@ -208,40 +226,36 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 					ps.setInt(3, outward.getTotalQuantity());
 					ps.setDouble(4, outward.getTotalWeight());
 					ps.setDate(5, sqlStartDate);
-					ps.setBoolean(6, true);
-					ps.setInt(7, outward.getTraderId());
-					ps.setInt(8, outward.getWhAdminId());
-					ps.setInt(9, outward.getWhUserId());
+					ps.setInt(6, outward.getTraderId());
+					ps.setInt(7, outward.getWhAdminId());
+					ps.setInt(8, outward.getWhUserId());
 				} catch (Exception e) {
 					logger.error("Failed To Outward :", e);
 				}
+				return ps;
 			}
+		}, holder);
 
-			@Override
-			public int getBatchSize() {
-				return outwardList.size();
-			}
-		});
-		updateInwardDetails(outwardList);
+		Integer newlyAddedOutwardId = 0;
+		if (holder.getKeys().size() > 1) {
+			newlyAddedOutwardId = (Integer) holder.getKeys().get("inward_id");
+		}
+		Outward outLot = new Outward();
+		outLot.setOutwardId(newlyAddedOutwardId);
+		logger.info("Inward Lot Added :");
+		updateInwardDetails(outward);
+		return outLot;
 	}
 
-	public void updateInwardDetails(List<Outward> outwardList) {
+	public void updateInwardDetails(Outward outward) {
 		StringBuilder selectQuery = new StringBuilder();
-		selectQuery.append("select Total_Quntity, total_weight, inward_id from ");
+		selectQuery.append("select Total_Quantity, total_weight, inward_id from ");
 		selectQuery.append(tablePrefix);
-		selectQuery.append("Inward where inward_id in(");
+		selectQuery.append("Inward where inward_id=?");
 		inwardList = new ArrayList<>();
-		updateToInwardCompleteList = new ArrayList<>();
-		updateToInwardPartiallyCompleteList = new ArrayList<>();
-		Object arguments[] = new Object[outwardList.size()];
-		for (int index = 0; index < outwardList.size(); index++) {
-			selectQuery.append("?");
-			arguments[index] = outwardList.get(index).getInwardId();
-			if (index != outwardList.size() - 1) {
-				selectQuery.append(",");
-			}
-		}
-		selectQuery.append(")");
+		updateToInwardComplete = new Inward();
+		updateToInwardPartiallyComplete = new Inward();
+		Object arguments[] = new Object[] { outward.getInwardId() };
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
 		for (Map<String, Object> row : rows) {
 			Inward inward = new Inward();
@@ -251,77 +265,35 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 			inwardList.add(inward);
 		}
 		logger.info(" updateInwardDetails InwardList Size : {}", inwardList.size());
-		logger.info(" updateInwardDetails OutwardList Size : {}", outwardList.size());
-		for (int i = 0; i < outwardList.size(); i++) {
-			Outward out = outwardList.get(i);
-			if (inwardList.contains(out)) {
-				Inward in = inwardList.get(i);
-				if (in.getTotalQuantity().equals(out.getTotalQuantity())
-						&& in.getTotalWeight().equals(out.getTotalWeight())) {
-					updateToInwardCompleteList.add(in);
-					logger.info("updateToIwnardCompleteList");
-				}
-				if (out.getTotalQuantity() < in.getTotalQuantity()) {
-					Inward inUpdate = new Inward();
-					inUpdate.setInwardId(in.getInwardId());
-					inUpdate.setTotalWeight(in.getTotalWeight() - out.getTotalWeight());
-					inUpdate.setTotalQuantity(in.getTotalQuantity() - out.getTotalQuantity());
-					updateToInwardPartiallyCompleteList.add(inUpdate);
-					logger.info("updateToIwnardPartiallyCompleteList");
-				}
-
+		inwardList.forEach(in -> {
+			if (in.getTotalQuantity().equals(outward.getTotalQuantity())
+					&& in.getTotalWeight().equals(outward.getTotalWeight())) {
+				updateToInwardComplete.setInwardId(in.getInwardId());
+				logger.info("updateToIwnardCompleteList");
 			}
-		}
-		if (updateToInwardCompleteList.size() != 0) {
+			if (outward.getTotalQuantity() < in.getTotalQuantity()) {
+				updateToInwardPartiallyComplete.setInwardId(in.getInwardId());
+				updateToInwardPartiallyComplete.setTotalWeight(in.getTotalWeight() - outward.getTotalWeight());
+				updateToInwardPartiallyComplete.setTotalQuantity(in.getTotalQuantity() - outward.getTotalQuantity());
+				logger.info("updateToIwnardPartiallyCompleteList");
+			}
+		});
+		if (updateToInwardComplete != null) {
 			StringBuilder updateCompleteQuery = new StringBuilder();
 			updateCompleteQuery.append("UPDATE ");
 			updateCompleteQuery.append(tablePrefix);
 			updateCompleteQuery.append("Inward set isOutwardFullyComplete=? where inward_Id=?");
-			jdbcTemplate.batchUpdate(updateCompleteQuery.toString(), new BatchPreparedStatementSetter() {
-				@Override
-				public void setValues(PreparedStatement ps, int i) throws SQLException {
-					Inward inward = updateToInwardCompleteList.get(i);
-					try {
-						ps.setBoolean(1, true);
-						ps.setInt(2, inward.getInwardId());
-					} catch (Exception e) {
-						logger.error("Failed To Update Complete Inward :", e);
-					}
-				}
-
-				@Override
-				public int getBatchSize() {
-					return updateToInwardCompleteList.size();
-				}
-			});
-			logger.info("updateToIwnardCompleteList Updated");
+			Object arg[] = new Object[] { true, updateToInwardComplete.getInwardId() };
+			jdbcTemplate.update(updateCompleteQuery.toString(), arg, new int[] {});
 		}
-
-		if (updateToInwardPartiallyCompleteList.size() != 0) {
+		if (updateToInwardPartiallyComplete != null) {
 			StringBuilder updatepartialQuery = new StringBuilder();
 			updatepartialQuery.append("UPDATE ");
 			updatepartialQuery.append(tablePrefix);
-			updatepartialQuery.append("Inward set total_quntity=?, total_weight=? where inward_Id=?");
-			jdbcTemplate.batchUpdate(updatepartialQuery.toString(), new BatchPreparedStatementSetter() {
-				@Override
-				public void setValues(PreparedStatement ps, int i) throws SQLException {
-					Inward inward = updateToInwardPartiallyCompleteList.get(i);
-					try {
-						ps.setInt(1, inward.getTotalQuantity());
-						ps.setDouble(2, inward.getTotalWeight());
-						ps.setInt(3, inward.getInwardId());
-					} catch (Exception e) {
-						logger.error("Failed To Update Partial Inward :", e);
-					}
-				}
-
-				@Override
-				public int getBatchSize() {
-					return updateToInwardPartiallyCompleteList.size();
-				}
-			});
+			updatepartialQuery.append("Inward set total_quantity=?, total_weight=? where inward_Id=?");
+			Object arg[] = new Object[] { updateToInwardPartiallyComplete.getTotalQuantity(),updateToInwardPartiallyComplete.getTotalWeight(), updateToInwardPartiallyComplete.getInwardId() };
+			jdbcTemplate.update(updatepartialQuery.toString(), arg, new int[] {});
 			logger.info("updateToIwnardPartiallyCompleteList Updated");
 		}
-
 	}
 }

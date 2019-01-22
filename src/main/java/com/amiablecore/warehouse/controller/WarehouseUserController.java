@@ -2,6 +2,8 @@ package com.amiablecore.warehouse.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import com.amiablecore.warehouse.service.WarehouseUserService;
 
 @RestController
 public class WarehouseUserController {
+	private static Logger logger = LoggerFactory.getLogger(WarehouseUserController.class);
 	@Autowired
 	private WarehouseUserService warehouseUserService;
 
@@ -53,15 +56,16 @@ public class WarehouseUserController {
 		return new ResponseEntity<Inward>(inward, HttpStatus.OK);
 	}
 
-	@PostMapping(value = "/synchronize/inward/")
-	public ResponseEntity<String> synchronizeInward(@RequestBody List<Inward> inwardList) {
-		warehouseUserService.synchronizeInward(inwardList);
-		return new ResponseEntity<String>(HttpStatus.OK);
+	@PostMapping(value = "/lot/inward/")
+	public ResponseEntity<Inward> storeInwardDetails(@RequestBody Inward inward) {
+		logger.info("StoreInwardDetails Called");
+		Inward storeInwardDetails = warehouseUserService.storeInwardDetails(inward);
+		return new ResponseEntity<Inward>(storeInwardDetails, HttpStatus.CREATED);
 	}
 
-	@PostMapping(value = "/synchronize/outward/")
-	public ResponseEntity<String> synchronizeOutward(@RequestBody List<Outward> outwardList) {
-		warehouseUserService.synchronizeOutward(outwardList);
+	@PostMapping(value = "/lot/outward/")
+	public ResponseEntity<String> synchronizeOutward(@RequestBody Outward outward) {
+		warehouseUserService.storeOutwardDetails(outward);
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 }

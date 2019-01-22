@@ -1,5 +1,7 @@
 package com.amiablecore.warehouse.exception;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,7 +19,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  */
 @ControllerAdvice
 public class RestResponseExceptionHandling extends ResponseEntityExceptionHandler {
-	
+
+	private static Logger logger = LoggerFactory.getLogger(RestResponseExceptionHandling.class);
+
 	public RestResponseExceptionHandling() {
 		super();
 	}
@@ -25,6 +29,7 @@ public class RestResponseExceptionHandling extends ResponseEntityExceptionHandle
 	@ExceptionHandler({ DataIntegrityViolationException.class })
 	public ResponseEntity<Object> handleBadRequest(DataIntegrityViolationException ex, WebRequest request) {
 		final String reponseBody = ex.getMessage();
+		logger.error(reponseBody, ex);
 		return handleExceptionInternal(ex, reponseBody, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 	}
 
@@ -47,9 +52,10 @@ public class RestResponseExceptionHandling extends ResponseEntityExceptionHandle
 		return new ResponseEntity<>("Access Denied", new HttpHeaders(), HttpStatus.FORBIDDEN);
 	}
 
-	@ExceptionHandler({ RuntimeException.class})
+	@ExceptionHandler({ RuntimeException.class })
 	public ResponseEntity<Object> handleRuntimeException(final Exception ex, final WebRequest request) {
 		final String body = ex.getMessage();
+		logger.error(body, ex.getCause().getCause());
 		return handleExceptionInternal(ex, body, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
 	}
 }
