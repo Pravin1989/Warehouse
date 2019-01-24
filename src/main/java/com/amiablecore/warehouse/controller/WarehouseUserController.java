@@ -58,7 +58,6 @@ public class WarehouseUserController {
 
 	@PostMapping(value = "/lot/inward/")
 	public ResponseEntity<Inward> storeInwardDetails(@RequestBody Inward inward) {
-		logger.info("StoreInwardDetails Called");
 		Inward storeInwardDetails = warehouseUserService.storeInwardDetails(inward);
 		return new ResponseEntity<Inward>(storeInwardDetails, HttpStatus.CREATED);
 	}
@@ -66,6 +65,6 @@ public class WarehouseUserController {
 	@PostMapping(value = "/lot/outward/")
 	public ResponseEntity<String> synchronizeOutward(@RequestBody Outward outward) {
 		warehouseUserService.storeOutwardDetails(outward);
-		return new ResponseEntity<String>(HttpStatus.OK);
+		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
 }

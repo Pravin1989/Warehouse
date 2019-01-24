@@ -3,7 +3,7 @@ package com.amiablecore.warehouse.beans;
 /**
  * @author Pravin
  */
-public class Outward implements Comparable<Outward> {
+public class Outward {
 	private Integer outwardId;
 	private Integer traderId;
 	private Integer inwardId;
@@ -96,26 +96,22 @@ public class Outward implements Comparable<Outward> {
 	public void setWhUserId(Integer whUserId) {
 		this.whUserId = whUserId;
 	}
+//
+//	@Override
+//	public int hashCode() {
+//		return inwardId * whAdminId;
+//	}
+//
+//	@Override
+//	public boolean equals(Object obj) {
+//		if (obj == this) {
+//			return true;
+//		}
+//		if (!(obj instanceof Inward)) {
+//			return false;
+//		}
+//		Inward out = (Inward) obj;
+//		return out.getInwardId().equals(this.inwardId);
+//	}
 
-	@Override
-	public int hashCode() {
-		return inwardId * whAdminId;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == this) {
-			return true;
-		}
-		if (!(obj instanceof Inward)) {
-			return false;
-		}
-		Inward out = (Inward) obj;
-		return out.getInwardId().equals(this.inwardId);
-	}
-
-	@Override
-	public int compareTo(Outward out) {
-		return this.inwardId.compareTo(out.getInwardId());
-	}
 }
