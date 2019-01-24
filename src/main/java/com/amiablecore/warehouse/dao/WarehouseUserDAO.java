@@ -22,4 +22,8 @@ public interface WarehouseUserDAO {
 	public Inward storeInwardDetails(Inward inward);
 
 	public Outward storeOutwardDetails(Outward outward);
+	
+	public List<Inward> retrieveInCompleteInward(Integer whUserId);
+
+	public List<Outward> retrieveInCompleteOutward(Integer whUserId);
 }

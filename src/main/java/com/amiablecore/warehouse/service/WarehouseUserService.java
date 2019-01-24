@@ -12,14 +12,18 @@ public interface WarehouseUserService {
 	public List<Category> retrieveCategories(Integer commodityId);
 
 	public List<Trader> retrieveTraders(String traderName);
-	
+
 	public List<Commodity> retrieveCommodities(Integer whAdminId);
-	
+
 	public Inward retrieveLotDetails(Integer lotId);
-	
+
 	public List<Inward> retrieveLotList(String lotName);
-	
+
 	public Inward storeInwardDetails(Inward inward);
-	
+
 	public Outward storeOutwardDetails(Outward outward);
+
+	public List<Inward> retrieveInCompleteInward(Integer whAdminId);
+
+	public List<Outward> retrieveInCompleteOutward(Integer whAdminId);
 }

@@ -19,7 +19,7 @@ import com.amiablecore.warehouse.service.WarehouseUserService;
 public class WarehouseUserServiceImpl implements WarehouseUserService {
 
 	private static Logger logger = LoggerFactory.getLogger(WarehouseUserServiceImpl.class);
-	
+
 	@Autowired
 	private WarehouseUserDAO warehouseUserDAO;
 
@@ -57,5 +57,15 @@ public class WarehouseUserServiceImpl implements WarehouseUserService {
 	@Override
 	public Outward storeOutwardDetails(Outward outward) {
 		return warehouseUserDAO.storeOutwardDetails(outward);
+	}
+
+	@Override
+	public List<Inward> retrieveInCompleteInward(Integer whUserId) {
+		return warehouseUserDAO.retrieveInCompleteInward(whUserId);
+	}
+
+	@Override
+	public List<Outward> retrieveInCompleteOutward(Integer whUserId) {
+		return warehouseUserDAO.retrieveInCompleteOutward(whUserId);
 	}
 }

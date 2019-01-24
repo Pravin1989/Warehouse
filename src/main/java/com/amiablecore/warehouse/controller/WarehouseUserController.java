@@ -67,4 +67,16 @@ public class WarehouseUserController {
 		warehouseUserService.storeOutwardDetails(outward);
 		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
+
+	@GetMapping(value = "/lot/inward/incomplete/{whUserId}")
+	public ResponseEntity<List<Inward>> retrieveInCompleteInward(@PathVariable("whUserId") Integer whUserId) {
+		List<Inward> inwardList = warehouseUserService.retrieveInCompleteInward(whUserId);
+		return new ResponseEntity<List<Inward>>(inwardList, HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/lot/inward/incomplete/{whUserId}")
+	public ResponseEntity<List<Outward>> retrieveInCompleteOutward(@PathVariable("whUserId") Integer whUserId) {
+		List<Outward> outwardList = warehouseUserService.retrieveInCompleteOutward(whUserId);
+		return new ResponseEntity<List<Outward>>(outwardList, HttpStatus.OK);
+	}
 }

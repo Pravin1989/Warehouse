@@ -209,19 +209,19 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		insertQuery.append("INSERT INTO ");
 		insertQuery.append(tablePrefix);
 		insertQuery.append("Outward(Inward_Id, Weight_Per_Bag, Total_Quantity, total_weight, Outward_Date, ");
-		insertQuery.append("Trader_Id, Wh_Admin_Id, wh_User_Id)");
-		insertQuery.append("VALUES(?,?,?,?,?,?,?,?)");
+		insertQuery.append("lot_name, Trader_Id, Wh_Admin_Id, wh_User_Id)");
+		insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?)");
 		KeyHolder holder = new GeneratedKeyHolder();
 		jdbcTemplate.update(new PreparedStatementCreator() {
 			@Override
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 				PreparedStatement ps = connection.prepareStatement(insertQuery.toString(),
 						Statement.RETURN_GENERATED_KEYS);
-				java.sql.Date sqlStartDate;
+				java.sql.Date sqlEndDate;
 				SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy");
 				try {
 					java.util.Date date = sdf1.parse(outward.getOutwardDate());
-					sqlStartDate = new java.sql.Date(date.getTime());
+					sqlEndDate = new java.sql.Date(date.getTime());
 					ps.setInt(1, outward.getInwardId());
 					ps.setDouble(2, outward.getBagWeight());
 					ps.setInt(3, outward.getTotalQuantity());
@@ -229,10 +229,11 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 						ps.setDouble(4, outward.getTotalWeight());
 					else
 						ps.setDouble(4, -1);
-					ps.setDate(5, sqlStartDate);
-					ps.setInt(6, outward.getTraderId());
-					ps.setInt(7, outward.getWhAdminId());
-					ps.setInt(8, outward.getWhUserId());
+					ps.setDate(5, sqlEndDate);
+					ps.setString(6, outward.getLotName());
+					ps.setInt(7, outward.getTraderId());
+					ps.setInt(8, outward.getWhAdminId());
+					ps.setInt(9, outward.getWhUserId());
 				} catch (Exception e) {
 					logger.error("Failed To Outward :", e);
 				}
@@ -305,5 +306,45 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 			jdbcTemplate.update(updatePartialQuery.toString(), arg, types);
 			logger.info("updateToInwardPartiallyComplete Updated");
 		}
+	}
+
+	@Override
+	public List<Inward> retrieveInCompleteInward(Integer whUserId) {
+		List<Inward> inwardList = new ArrayList<Inward>();
+		StringBuilder selectQuery = new StringBuilder();
+		selectQuery.append("select * from ");
+		selectQuery.append(tablePrefix);
+		selectQuery.append("Inward where wh_User_Id=? and total_weight= " + -1);
+		Object arguments[] = { whUserId };
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
+		for (Map<String, Object> row : rows) {
+			Inward inward = new Inward();
+			inward.setInwardId((Integer) row.get("inward_id"));
+			inward.setLotName((String) row.get("lot_name"));
+			inward.setTotalWeight(((BigDecimal) row.get("total_weight")).doubleValue());
+			inwardList.add(inward);
+		}
+		logger.info("InComplete Inward Lot List Retrieved");
+		return inwardList;
+	}
+
+	@Override
+	public List<Outward> retrieveInCompleteOutward(Integer whUserId) {
+		List<Outward> outwardList = new ArrayList<Outward>();
+		StringBuilder selectQuery = new StringBuilder();
+		selectQuery.append("select * from ");
+		selectQuery.append(tablePrefix);
+		selectQuery.append("Outward where wh_User_Id=? and total_weight= " + -1);
+		Object arguments[] = { whUserId };
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
+		for (Map<String, Object> row : rows) {
+			Outward outward = new Outward();
+			outward.setOutwardId((Integer) row.get("outward_id"));
+			outward.setLotName((String) row.get("lot_name"));
+			outward.setTotalWeight(((BigDecimal) row.get("total_weight")).doubleValue());
+			outwardList.add(outward);
+		}
+		logger.info("InComplete Outward Lot List Retrieved");
+		return outwardList;
 	}
 }
