@@ -2,14 +2,15 @@ package com.amiablecore.warehouse.controller;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.websocket.server.PathParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +23,6 @@ import com.amiablecore.warehouse.service.WarehouseUserService;
 
 @RestController
 public class WarehouseUserController {
-	private static Logger logger = LoggerFactory.getLogger(WarehouseUserController.class);
 	@Autowired
 	private WarehouseUserService warehouseUserService;
 
@@ -63,7 +63,7 @@ public class WarehouseUserController {
 	}
 
 	@PostMapping(value = "/lot/outward/")
-	public ResponseEntity<String> synchronizeOutward(@RequestBody Outward outward) {
+	public ResponseEntity<String> storeOutwardDetails(@RequestBody Outward outward) {
 		warehouseUserService.storeOutwardDetails(outward);
 		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
@@ -74,9 +74,23 @@ public class WarehouseUserController {
 		return new ResponseEntity<List<Inward>>(inwardList, HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/lot/inward/incomplete/{whUserId}")
+	@GetMapping(value = "/lot/outward/incomplete/{whUserId}")
 	public ResponseEntity<List<Outward>> retrieveInCompleteOutward(@PathVariable("whUserId") Integer whUserId) {
 		List<Outward> outwardList = warehouseUserService.retrieveInCompleteOutward(whUserId);
 		return new ResponseEntity<List<Outward>>(outwardList, HttpStatus.OK);
+	}
+
+	@PutMapping(value = "/lot/inward/update/{inwardId}")
+	public ResponseEntity<String> updateTotalWeightInward(@PathVariable("inwardId") Integer inwardId,
+			@PathParam("totalWeight") String totalWeight) {
+		warehouseUserService.updateTotalWeightInward(inwardId, Double.parseDouble(totalWeight));
+		return new ResponseEntity<String>(HttpStatus.OK);
+	}
+
+	@PutMapping(value = "/lot/outward/update/{outwardId}")
+	public ResponseEntity<String> updateTotalWeightOutward(@PathVariable("outwardId") Integer outwardId,
+			@PathParam("totalWeight") String totalWeight) {
+		warehouseUserService.updateTotalWeightOutward(outwardId, Double.parseDouble(totalWeight));
+		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 }

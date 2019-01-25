@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -321,7 +320,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 			Inward inward = new Inward();
 			inward.setInwardId((Integer) row.get("inward_id"));
 			inward.setLotName((String) row.get("lot_name"));
-			inward.setTotalWeight(((BigDecimal) row.get("total_weight")).doubleValue());
+			// inward.setTotalWeight(((BigDecimal) row.get("total_weight")).doubleValue());
 			inwardList.add(inward);
 		}
 		logger.info("InComplete Inward Lot List Retrieved");
@@ -341,10 +340,38 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 			Outward outward = new Outward();
 			outward.setOutwardId((Integer) row.get("outward_id"));
 			outward.setLotName((String) row.get("lot_name"));
-			outward.setTotalWeight(((BigDecimal) row.get("total_weight")).doubleValue());
+			// outward.setTotalWeight(((BigDecimal) row.get("total_weight")).doubleValue());
 			outwardList.add(outward);
 		}
 		logger.info("InComplete Outward Lot List Retrieved");
 		return outwardList;
+	}
+
+	@Override
+	@Transactional
+	public String updateTotalWeightInward(Integer inwardId, Double totalWeight) {
+		StringBuilder updateTotalWeightInwardQuery = new StringBuilder();
+		int[] types = { Types.DECIMAL, Types.INTEGER, };
+		updateTotalWeightInwardQuery.append("UPDATE ");
+		updateTotalWeightInwardQuery.append(tablePrefix);
+		updateTotalWeightInwardQuery.append("Inward set total_weight=? where inward_Id=?");
+		Object arg[] = new Object[] { totalWeight, inwardId };
+		jdbcTemplate.update(updateTotalWeightInwardQuery.toString(), arg, types);
+		logger.info("TotalWeight Inward Updated");
+		return "";
+	}
+
+	@Override
+	@Transactional
+	public String updateTotalWeightOutward(Integer outwardId, Double totalWeight) {
+		StringBuilder updateTotalWeightInwardQuery = new StringBuilder();
+		int[] types = { Types.DECIMAL, Types.INTEGER, };
+		updateTotalWeightInwardQuery.append("UPDATE ");
+		updateTotalWeightInwardQuery.append(tablePrefix);
+		updateTotalWeightInwardQuery.append("Outward set total_weight=? where outward_Id=?");
+		Object arg[] = new Object[] { totalWeight, outwardId };
+		jdbcTemplate.update(updateTotalWeightInwardQuery.toString(), arg, types);
+		logger.info("TotalWeight Outward Updated");
+		return "";
 	}
 }

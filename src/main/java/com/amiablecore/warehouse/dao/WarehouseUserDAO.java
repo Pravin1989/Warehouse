@@ -22,8 +22,12 @@ public interface WarehouseUserDAO {
 	public Inward storeInwardDetails(Inward inward);
 
 	public Outward storeOutwardDetails(Outward outward);
-	
+
 	public List<Inward> retrieveInCompleteInward(Integer whUserId);
 
 	public List<Outward> retrieveInCompleteOutward(Integer whUserId);
+
+	public String updateTotalWeightInward(Integer inwardId, Double totalWeight);
+
+	public String updateTotalWeightOutward(Integer outwardId, Double totalWeight);
 }

@@ -68,4 +68,15 @@ public class WarehouseUserServiceImpl implements WarehouseUserService {
 	public List<Outward> retrieveInCompleteOutward(Integer whUserId) {
 		return warehouseUserDAO.retrieveInCompleteOutward(whUserId);
 	}
+
+	@Override
+	public String updateTotalWeightInward(Integer inwardId, Double totalWeight) {
+		return warehouseUserDAO.updateTotalWeightInward(inwardId, totalWeight);
+	}
+
+	@Override
+	public String updateTotalWeightOutward(Integer outwardId, Double totalWeight) {
+		return warehouseUserDAO.updateTotalWeightOutward(outwardId, totalWeight);
+	}
+
 }

@@ -1,5 +1,7 @@
 package com.amiablecore.warehouse.dao.impl;
 
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -41,9 +43,15 @@ public class LoginDaoImpl implements LoginDAO {
 				response.setLoggedInMessage("Admin not present");
 				return response;
 			}
+			Timestamp date, currentDate;
 			for (Map<String, Object> row : rows) {
 				logger.info("Logged In as Admin");
 				response.setWhId((Integer) row.get("Id"));
+				date = (Timestamp) row.get("expirydate");
+				currentDate = new Timestamp(new java.util.Date().getTime());
+				if (currentDate.getTime() > date.getTime()) {
+					response.setAdminSubscriptionExpired(true);
+				}
 				response.setLoginIndicator(true);
 				response.setLoggedInMessage("Login Is Done as Admin");
 			}
@@ -63,6 +71,18 @@ public class LoginDaoImpl implements LoginDAO {
 				response.setUserId((Integer) row.get("whuserid"));
 				response.setLoginIndicator(true);
 				response.setLoggedInMessage("Login Is Done as Admin");
+			}
+			StringBuilder selectQuery = new StringBuilder();
+			selectQuery.append("select * from ");
+			selectQuery.append(tablePrefix);
+			selectQuery.append("Warehouse where Id=? ");
+			Object arg[] = { response.getWhId() };
+			List<Map<String, Object>> warehouseRows = jdbcTemplate.queryForList(selectQuery.toString(), arg);
+			Timestamp date, currentDate;
+			date = (Timestamp) warehouseRows.get(0).get("expirydate");
+			currentDate = new Timestamp(new java.util.Date().getTime());
+			if (currentDate.getTime() > date.getTime()) {
+				response.setAdminSubscriptionExpired(true);
 			}
 		}
 		return response;

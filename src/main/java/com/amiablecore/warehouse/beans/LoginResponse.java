@@ -8,6 +8,7 @@ public class LoginResponse {
 	private String loggedInMessage;
 	private Integer whId;
 	private Integer userId;
+	private boolean adminSubscriptionExpired;
 	
 	public Integer getUserId() {
 		return userId;
@@ -39,5 +40,13 @@ public class LoginResponse {
 
 	public void setLoggedInMessage(String loggedInMessage) {
 		this.loggedInMessage = loggedInMessage;
+	}
+
+	public boolean isAdminSubscriptionExpired() {
+		return adminSubscriptionExpired;
+	}
+
+	public void setAdminSubscriptionExpired(boolean adminSubscriptionExpired) {
+		this.adminSubscriptionExpired = adminSubscriptionExpired;
 	}
 }

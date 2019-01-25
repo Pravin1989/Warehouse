@@ -27,7 +27,7 @@ public class LoginController {
 	@PostMapping(value = "/login/{userType}")
 	public ResponseEntity<LoginResponse> login(@PathVariable("userType") String type,
 			@RequestBody LoginRequest request) {
-		request.setUserType(UserType.fromString(type));
+		request.setUserType(UserType.fromString(type.toUpperCase()));
 		LoginResponse response = loginService.validateLogin(request);
 		if (response.getLoginIndicator()) {
 			logger.info("User Found");

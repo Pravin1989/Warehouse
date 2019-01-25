@@ -26,4 +26,8 @@ public interface WarehouseUserService {
 	public List<Inward> retrieveInCompleteInward(Integer whAdminId);
 
 	public List<Outward> retrieveInCompleteOutward(Integer whAdminId);
+
+	public String updateTotalWeightInward(Integer inwardId, Double totalWeight);
+
+	public String updateTotalWeightOutward(Integer outwardId, Double totalWeight);
 }
