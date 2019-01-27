@@ -136,7 +136,8 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		selectQuery.append("select * from ");
 		selectQuery.append(tablePrefix);
 		selectQuery.append("Inward where LOWER(lot_name) like '%" + lotName.toLowerCase()
-				+ "%' and isOutwardFullyComplete is not true and total_weight != " + -1);
+				+ "%' and isOutwardFullyComplete is not true and total_weight != " + -1 + " and is_sync_with_outward="
+				+ true);
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString());
 		for (Map<String, Object> row : rows) {
 			Inward inward = new Inward();
@@ -156,8 +157,9 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		insertQuery.append("INSERT INTO ");
 		insertQuery.append(tablePrefix);
 		insertQuery.append("Inward( Weight_Per_Bag, Total_Quantity, total_weight, Inward_Date, ");
-		insertQuery.append("Physical_Address, Lot_Name, Comodity_Id, Category_Id, Trader_Id, Wh_Admin_Id, wh_User_Id)");
-		insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?,?,?)");
+		insertQuery.append(
+				"Physical_Address, Lot_Name, Comodity_Id, Category_Id, Trader_Id, Wh_Admin_Id, wh_User_Id, is_sync_with_outward)");
+		insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
 		KeyHolder holder = new GeneratedKeyHolder();
 		jdbcTemplate.update(new PreparedStatementCreator() {
 			@Override
@@ -184,6 +186,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 					ps.setInt(9, inward.getTraderId());
 					ps.setInt(10, inward.getWhAdminId());
 					ps.setInt(11, inward.getWhUserId());
+					ps.setBoolean(12, true);
 				} catch (Exception e) {
 					logger.error("Failed To Inward :", e);
 				}
@@ -247,7 +250,18 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		Outward outLot = new Outward();
 		outLot.setOutwardId(newlyAddedOutwardId);
 		logger.info("Outward Lot Added :");
-		updateInwardDetails(outward);
+		if (outward.getTotalWeight() == null) {
+			StringBuilder updateInwardQuery = new StringBuilder();
+			int[] types = { Types.BOOLEAN, Types.INTEGER };
+			updateInwardQuery.append("UPDATE ");
+			updateInwardQuery.append(tablePrefix);
+			updateInwardQuery.append("Inward set is_sync_with_outward=? where inward_Id=?");
+			Object arg[] = new Object[] { false, outward.getInwardId() };
+			jdbcTemplate.update(updateInwardQuery.toString(), arg, types);
+			logger.info("Total Weight is Null so Inward Updated with ");
+		} else {
+			updateInwardDetails(outward);
+		}
 		return outLot;
 	}
 
@@ -285,23 +299,25 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 			}
 		});
 		if (updateToInwardComplete != null) {
-			int[] types = { Types.BOOLEAN, Types.INTEGER };
+			int[] types = { Types.BOOLEAN, Types.BOOLEAN, Types.INTEGER };
 			StringBuilder updateCompleteQuery = new StringBuilder();
 			updateCompleteQuery.append("UPDATE ");
 			updateCompleteQuery.append(tablePrefix);
-			updateCompleteQuery.append("Inward set isOutwardFullyComplete=? where inward_Id=?");
-			Object arg[] = new Object[] { true, updateToInwardComplete.getInwardId() };
+			updateCompleteQuery.append("Inward set isOutwardFullyComplete=?, is_sync_with_outward=? where inward_Id=?");
+			Object arg[] = new Object[] { true, true, updateToInwardComplete.getInwardId() };
 			jdbcTemplate.update(updateCompleteQuery.toString(), arg, types);
 			logger.info("updateToInwardComplete Updated");
 		}
 		if (updateToInwardPartiallyComplete != null) {
 			StringBuilder updatePartialQuery = new StringBuilder();
-			int[] types = { Types.INTEGER, Types.DOUBLE, Types.INTEGER };
+			int[] types = { Types.INTEGER, Types.DOUBLE, Types.BOOLEAN, Types.INTEGER };
 			updatePartialQuery.append("UPDATE ");
 			updatePartialQuery.append(tablePrefix);
-			updatePartialQuery.append("Inward set total_quantity=?, total_weight=? where inward_Id=?");
+			updatePartialQuery
+					.append("Inward set total_quantity=?, total_weight=?, is_sync_with_outward=? where inward_Id=?");
 			Object arg[] = new Object[] { updateToInwardPartiallyComplete.getTotalQuantity(),
-					updateToInwardPartiallyComplete.getTotalWeight(), updateToInwardPartiallyComplete.getInwardId() };
+					updateToInwardPartiallyComplete.getTotalWeight(), true,
+					updateToInwardPartiallyComplete.getInwardId(), };
 			jdbcTemplate.update(updatePartialQuery.toString(), arg, types);
 			logger.info("updateToInwardPartiallyComplete Updated");
 		}
@@ -339,8 +355,10 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		for (Map<String, Object> row : rows) {
 			Outward outward = new Outward();
 			outward.setOutwardId((Integer) row.get("outward_id"));
+			outward.setInwardId((Integer) row.get("inward_id"));
 			outward.setLotName((String) row.get("lot_name"));
-			// outward.setTotalWeight(((BigDecimal) row.get("total_weight")).doubleValue());
+			outward.setTotalWeight(((BigDecimal) row.get("total_weight")).doubleValue());
+			outward.setTotalQuantity((Integer) row.get("total_quantity"));
 			outwardList.add(outward);
 		}
 		logger.info("InComplete Outward Lot List Retrieved");
@@ -363,15 +381,16 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 
 	@Override
 	@Transactional
-	public String updateTotalWeightOutward(Integer outwardId, Double totalWeight) {
+	public String updateTotalWeightOutward(Outward outward) {
 		StringBuilder updateTotalWeightInwardQuery = new StringBuilder();
 		int[] types = { Types.DECIMAL, Types.INTEGER, };
 		updateTotalWeightInwardQuery.append("UPDATE ");
 		updateTotalWeightInwardQuery.append(tablePrefix);
 		updateTotalWeightInwardQuery.append("Outward set total_weight=? where outward_Id=?");
-		Object arg[] = new Object[] { totalWeight, outwardId };
+		Object arg[] = new Object[] { outward.getTotalWeight(), outward.getOutwardId() };
 		jdbcTemplate.update(updateTotalWeightInwardQuery.toString(), arg, types);
 		logger.info("TotalWeight Outward Updated");
+		updateInwardDetails(outward);
 		return "";
 	}
 }

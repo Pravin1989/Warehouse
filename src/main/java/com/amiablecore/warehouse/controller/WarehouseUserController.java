@@ -80,17 +80,16 @@ public class WarehouseUserController {
 		return new ResponseEntity<List<Outward>>(outwardList, HttpStatus.OK);
 	}
 
-	@PutMapping(value = "/lot/inward/update/{inwardId}")
+	@GetMapping(value = "/lot/inward/update/{inwardId}/weight/{totalWeight}")
 	public ResponseEntity<String> updateTotalWeightInward(@PathVariable("inwardId") Integer inwardId,
-			@PathParam("totalWeight") String totalWeight) {
+			@PathVariable("totalWeight") String totalWeight) {
 		warehouseUserService.updateTotalWeightInward(inwardId, Double.parseDouble(totalWeight));
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 
-	@PutMapping(value = "/lot/outward/update/{outwardId}")
-	public ResponseEntity<String> updateTotalWeightOutward(@PathVariable("outwardId") Integer outwardId,
-			@PathParam("totalWeight") String totalWeight) {
-		warehouseUserService.updateTotalWeightOutward(outwardId, Double.parseDouble(totalWeight));
+	@PostMapping(value = "/lot/outward/update/")
+	public ResponseEntity<String> updateTotalWeightOutward(@RequestBody Outward outward) {
+		warehouseUserService.updateTotalWeightOutward(outward);
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 }

@@ -29,5 +29,5 @@ public interface WarehouseUserService {
 
 	public String updateTotalWeightInward(Integer inwardId, Double totalWeight);
 
-	public String updateTotalWeightOutward(Integer outwardId, Double totalWeight);
+	public String updateTotalWeightOutward(Outward outward);
 }

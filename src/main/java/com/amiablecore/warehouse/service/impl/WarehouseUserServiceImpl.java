@@ -75,8 +75,8 @@ public class WarehouseUserServiceImpl implements WarehouseUserService {
 	}
 
 	@Override
-	public String updateTotalWeightOutward(Integer outwardId, Double totalWeight) {
-		return warehouseUserDAO.updateTotalWeightOutward(outwardId, totalWeight);
+	public String updateTotalWeightOutward(Outward outward) {
+		return warehouseUserDAO.updateTotalWeightOutward(outward);
 	}
 
 }

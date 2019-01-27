@@ -32,6 +32,9 @@ public class WarehouseAdminController {
 	@PostMapping(value = "/trader/create")
 	public ResponseEntity<Trader> createTrader(@RequestBody Trader trader) {
 		Trader newTrader = warehouseAdminService.createTrader(trader);
+		if (newTrader.isAlreadyPresent()) {
+			return new ResponseEntity<Trader>(newTrader, HttpStatus.OK);
+		}
 		return new ResponseEntity<Trader>(newTrader, HttpStatus.CREATED);
 	}
 
