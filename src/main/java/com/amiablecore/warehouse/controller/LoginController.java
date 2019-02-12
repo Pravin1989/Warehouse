@@ -41,4 +41,10 @@ public class LoginController {
 	public ResponseEntity<String> testServerStatus() {
 		return new ResponseEntity<String>("Server Is Running", HttpStatus.OK);
 	}
+
+	@GetMapping(value = "/logout")
+	public ResponseEntity<String> logOutUser() {
+		return new ResponseEntity<String>("User Is Logged Out", HttpStatus.OK);
+	}
+
 }
