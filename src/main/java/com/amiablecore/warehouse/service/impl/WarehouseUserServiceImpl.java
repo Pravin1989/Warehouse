@@ -1,6 +1,11 @@
 package com.amiablecore.warehouse.service.impl;
 
 import java.util.List;
+import java.util.Properties;
+
+import javax.mail.Authenticator;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,9 +14,11 @@ import org.springframework.stereotype.Service;
 
 import com.amiablecore.warehouse.beans.Category;
 import com.amiablecore.warehouse.beans.Commodity;
+import com.amiablecore.warehouse.beans.Email;
 import com.amiablecore.warehouse.beans.Inward;
 import com.amiablecore.warehouse.beans.Outward;
 import com.amiablecore.warehouse.beans.Trader;
+import com.amiablecore.warehouse.config.EmailUtil;
 import com.amiablecore.warehouse.dao.WarehouseUserDAO;
 import com.amiablecore.warehouse.service.WarehouseUserService;
 
@@ -77,6 +84,35 @@ public class WarehouseUserServiceImpl implements WarehouseUserService {
 	@Override
 	public String updateTotalWeightOutward(Outward outward) {
 		return warehouseUserDAO.updateTotalWeightOutward(outward);
+	}
+
+	@Override
+	public List<String> retrieveUnits() {
+		return warehouseUserDAO.retrieveUnits();
+	}
+
+	@Override
+	public boolean sendEmail(Email email) {
+		final String fromEmail = "amiablecore@gmail.com"; // requires valid gmail id
+		final String password = "Suresh@2018"; // correct password for gmail id
+
+		Properties props = new Properties();
+		props.put("mail.smtp.host", "smtp.gmail.com"); // SMTP Host
+		props.put("mail.smtp.port", "587"); // TLS Port
+		props.put("mail.smtp.auth", "true"); // enable authentication
+		props.put("mail.smtp.starttls.enable", "true"); // enable STARTTLS
+
+		// create Authenticator object to pass in Session.getInstance argument
+		Authenticator auth = new Authenticator() {
+			// override the getPasswordAuthentication method
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(fromEmail, password);
+			}
+		};
+		Session session = Session.getInstance(props, auth);
+
+		EmailUtil.sendEmail(session, email.getToEmail(), email.getSubject(), email.getMessage());
+		return false;
 	}
 
 }

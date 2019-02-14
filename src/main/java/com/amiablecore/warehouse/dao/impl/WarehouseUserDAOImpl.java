@@ -393,4 +393,20 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		updateInwardDetails(outward);
 		return "";
 	}
+
+	@Override
+	public List<String> retrieveUnits() {
+		List<String> unitList = new ArrayList<String>();
+		StringBuilder selectQuery = new StringBuilder();
+		selectQuery.append("select * from ");
+		selectQuery.append(tablePrefix);
+		selectQuery.append("Units");
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString());
+
+		for (Map<String, Object> row : rows) {
+			unitList.add((String) row.get("unit_name"));
+		}
+		logger.info("Units Retrieved");
+		return unitList;
+	}
 }

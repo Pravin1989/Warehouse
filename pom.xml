@@ -62,7 +62,6 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/javax.mail/mail -->
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
@@ -73,10 +72,7 @@
 			<artifactId>bcmail-jdk16</artifactId>
 			<version>1.46</version>
 		</dependency>
-
 	</dependencies>
-	<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-security</artifactId> 
-		</dependency> -->
 	<build>
 		<plugins>
 			<plugin>

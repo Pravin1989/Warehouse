@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.amiablecore.warehouse.beans.Category;
 import com.amiablecore.warehouse.beans.Commodity;
+import com.amiablecore.warehouse.beans.Email;
 import com.amiablecore.warehouse.beans.Inward;
 import com.amiablecore.warehouse.beans.Outward;
 import com.amiablecore.warehouse.beans.Trader;
@@ -92,4 +93,17 @@ public class WarehouseUserController {
 		warehouseUserService.updateTotalWeightOutward(outward);
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
+
+	@GetMapping(value = "/retrieve/units/")
+	public ResponseEntity<List<String>> retrieveUnits() {
+		List<String> units = warehouseUserService.retrieveUnits();
+		return new ResponseEntity<List<String>>(units, HttpStatus.OK);
+	}
+
+	@PostMapping(value = "/email/")
+	public ResponseEntity<Boolean> sendEmail(@RequestBody Email email) {
+		warehouseUserService.sendEmail(email);
+		return new ResponseEntity<Boolean>(HttpStatus.OK);
+	}
+
 }

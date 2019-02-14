@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.amiablecore.warehouse.beans.Category;
 import com.amiablecore.warehouse.beans.Commodity;
+import com.amiablecore.warehouse.beans.Email;
 import com.amiablecore.warehouse.beans.Inward;
 import com.amiablecore.warehouse.beans.Outward;
 import com.amiablecore.warehouse.beans.Trader;
@@ -30,4 +31,8 @@ public interface WarehouseUserService {
 	public String updateTotalWeightInward(Integer inwardId, Double totalWeight);
 
 	public String updateTotalWeightOutward(Outward outward);
+
+	public List<String> retrieveUnits();
+	
+	public boolean sendEmail(Email email);
 }

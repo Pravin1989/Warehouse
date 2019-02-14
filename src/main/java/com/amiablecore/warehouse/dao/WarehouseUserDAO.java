@@ -30,4 +30,6 @@ public interface WarehouseUserDAO {
 	public String updateTotalWeightInward(Integer inwardId, Double totalWeight);
 
 	public String updateTotalWeightOutward(Outward outward);
+
+	public List<String> retrieveUnits();
 }
