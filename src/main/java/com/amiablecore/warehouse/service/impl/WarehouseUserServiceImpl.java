@@ -93,8 +93,8 @@ public class WarehouseUserServiceImpl implements WarehouseUserService {
 
 	@Override
 	public boolean sendEmail(Email email) {
-		final String fromEmail = "amiablecore@gmail.com"; // requires valid gmail id
-		final String password = "Suresh@2018"; // correct password for gmail id
+		final String fromEmail = "....."; // requires valid gmail id
+		final String password = "....."; // correct password for gmail id
 
 		Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.gmail.com"); // SMTP Host
