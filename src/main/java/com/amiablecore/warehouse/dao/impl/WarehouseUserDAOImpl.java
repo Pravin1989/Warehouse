@@ -124,6 +124,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 			inward.setLotName((String) rows.get(0).get("lot_name"));
 			inward.setTotalQuantity((Integer) rows.get(0).get("Total_Quantity"));
 			inward.setWeightPerBag(((BigDecimal) rows.get(0).get("Weight_Per_Bag")).doubleValue());
+			inward.setUnit((String) rows.get(0).get("unit"));
 		}
 		logger.info("Lot Details Retrieved");
 		return inward;
@@ -158,8 +159,8 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		insertQuery.append(tablePrefix);
 		insertQuery.append("Inward( Weight_Per_Bag, Total_Quantity, total_weight, Inward_Date, ");
 		insertQuery.append(
-				"Physical_Address, Lot_Name, Comodity_Id, Category_Id, Trader_Id, Wh_Admin_Id, wh_User_Id, is_sync_with_outward)");
-		insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+				"Physical_Address, Lot_Name, Comodity_Id, Category_Id, Trader_Id, Wh_Admin_Id, wh_User_Id, is_sync_with_outward, unit)");
+		insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		KeyHolder holder = new GeneratedKeyHolder();
 		jdbcTemplate.update(new PreparedStatementCreator() {
 			@Override
@@ -187,6 +188,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 					ps.setInt(10, inward.getWhAdminId());
 					ps.setInt(11, inward.getWhUserId());
 					ps.setBoolean(12, true);
+					ps.setString(13, inward.getUnit());
 				} catch (Exception e) {
 					logger.error("Failed To Inward :", e);
 				}
@@ -211,8 +213,8 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		insertQuery.append("INSERT INTO ");
 		insertQuery.append(tablePrefix);
 		insertQuery.append("Outward(Inward_Id, Weight_Per_Bag, Total_Quantity, total_weight, Outward_Date, ");
-		insertQuery.append("lot_name, Trader_Id, Wh_Admin_Id, wh_User_Id)");
-		insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?)");
+		insertQuery.append("lot_name, Trader_Id, Wh_Admin_Id, wh_User_Id, unit)");
+		insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?,?)");
 		KeyHolder holder = new GeneratedKeyHolder();
 		jdbcTemplate.update(new PreparedStatementCreator() {
 			@Override
@@ -236,6 +238,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 					ps.setInt(7, outward.getTraderId());
 					ps.setInt(8, outward.getWhAdminId());
 					ps.setInt(9, outward.getWhUserId());
+					ps.setString(10, outward.getUnit());
 				} catch (Exception e) {
 					logger.error("Failed To Outward :", e);
 				}

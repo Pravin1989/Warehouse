@@ -17,6 +17,7 @@ public class Inward implements Comparable<Inward> {
 	private String physicalAddress;
 	private Integer whAdminId;
 	private Integer whUserId;
+	private String unit;
 
 	public void setWhAdminId(Integer whAdminId) {
 		this.whAdminId = whAdminId;
@@ -114,25 +115,33 @@ public class Inward implements Comparable<Inward> {
 		return physicalAddress;
 	}
 
-//	@Override
-//	public int hashCode() {
-//		return this.inwardId;
-//	}
-//
-//	@Override
-//	public boolean equals(Object obj) {
-//		if (obj == this) {
-//			return true;
-//		}
-//		if (!(obj instanceof Outward)) {
-//			return false;
-//		}
-//		Inward in = (Inward) obj;
-//		return in.inwardId.equals(this.inwardId);
-//	}
+	// @Override
+	// public int hashCode() {
+	// return this.inwardId;
+	// }
+	//
+	// @Override
+	// public boolean equals(Object obj) {
+	// if (obj == this) {
+	// return true;
+	// }
+	// if (!(obj instanceof Outward)) {
+	// return false;
+	// }
+	// Inward in = (Inward) obj;
+	// return in.inwardId.equals(this.inwardId);
+	// }
 
 	@Override
 	public int compareTo(Inward in) {
 		return this.inwardId.compareTo(in.getInwardId());
+	}
+
+	public String getUnit() {
+		return unit;
+	}
+
+	public void setUnit(String unit) {
+		this.unit = unit;
 	}
 }

@@ -14,6 +14,7 @@ public class Outward {
 	private Double totalWeight;
 	private Double bagWeight;
 	private String lotName;
+	private String unit;
 
 	public void setLotName(String lotName) {
 		this.lotName = lotName;
@@ -96,22 +97,30 @@ public class Outward {
 	public void setWhUserId(Integer whUserId) {
 		this.whUserId = whUserId;
 	}
-//
-//	@Override
-//	public int hashCode() {
-//		return inwardId * whAdminId;
-//	}
-//
-//	@Override
-//	public boolean equals(Object obj) {
-//		if (obj == this) {
-//			return true;
-//		}
-//		if (!(obj instanceof Inward)) {
-//			return false;
-//		}
-//		Inward out = (Inward) obj;
-//		return out.getInwardId().equals(this.inwardId);
-//	}
+	//
+	// @Override
+	// public int hashCode() {
+	// return inwardId * whAdminId;
+	// }
+	//
+	// @Override
+	// public boolean equals(Object obj) {
+	// if (obj == this) {
+	// return true;
+	// }
+	// if (!(obj instanceof Inward)) {
+	// return false;
+	// }
+	// Inward out = (Inward) obj;
+	// return out.getInwardId().equals(this.inwardId);
+	// }
+
+	public String getUnit() {
+		return unit;
+	}
+
+	public void setUnit(String unit) {
+		this.unit = unit;
+	}
 
 }
