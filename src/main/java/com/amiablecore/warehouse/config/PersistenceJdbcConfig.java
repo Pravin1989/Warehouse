@@ -1,6 +1,8 @@
 package com.amiablecore.warehouse.config;
 
+import org.apache.tomcat.jdbc.pool.ConnectionPool;
 import org.apache.tomcat.jdbc.pool.DataSource;
+import org.apache.tomcat.jdbc.pool.PoolConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +24,12 @@ public class PersistenceJdbcConfig {
 	@ConfigurationProperties(prefix = "db100.datasource")
 	@Bean
 	public DataSource db101DataSource() {
-		return new DataSource();
+		PoolConfiguration pool = new DataSource();
+		pool.setUrl("jdbc:sqlserver://localhost;databaseName=testdb");
+		pool.setUsername("sa");
+		pool.setPassword("");
+		pool.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+		return new DataSource(pool);
 	}
 
 	/**
