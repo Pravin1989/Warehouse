@@ -35,7 +35,7 @@ public class LoginDaoImpl implements LoginDAO {
 		query.append(tablePrefix);
 		if (request.getUserType() == UserType.WH_ADMIN) {
 			query.append("Warehouse where whId=? ");
-			query.append("and password=? ");
+			query.append("and password=?");
 			Object arguments[] = { request.getLoginId(), request.getLoginPassword() };
 			List<Map<String, Object>> rows = jdbcTemplate.queryForList(query.toString(), arguments);
 			if (rows.size() == 0) {
