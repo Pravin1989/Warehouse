@@ -77,7 +77,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString());
 		for (Map<String, Object> row : rows) {
 			Trader trader = new Trader();
-			trader.setTraderId((Integer) row.get("trader_id"));
+			trader.setTraderId((Integer) row.get("id"));
 			trader.setTraderName((String) row.get("trader_name"));
 			trader.setTraderState((String) row.get("state"));
 			trader.setCity((String) row.get("city"));
@@ -137,8 +137,8 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		selectQuery.append("select * from ");
 		selectQuery.append(tablePrefix);
 		selectQuery.append("Inward where LOWER(lot_name) like '%" + lotName.toLowerCase()
-				+ "%' and isOutwardFullyComplete is not true and total_weight != " + -1 + " and is_sync_with_outward="
-				+ true);
+				+ "%' and ISNULL(isoutwardfullycomplete,'false') <>  'true' and total_weight <> " + -1 + " and is_sync_with_outward="
+				+ "'"+true+"'");
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString());
 		for (Map<String, Object> row : rows) {
 			Inward inward = new Inward();

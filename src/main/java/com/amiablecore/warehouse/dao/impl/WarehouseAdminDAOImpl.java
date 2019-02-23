@@ -259,9 +259,9 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 	public List<Commodity> retrieveCommodities(Integer whAdminId) {
 		List<Commodity> commoditiesList = new ArrayList<>();
 		StringBuilder selectQuery = new StringBuilder();
-		selectQuery.append("select * from ");
+		selectQuery.append("select top 10 * from ");
 		selectQuery.append(tablePrefix);
-		selectQuery.append("Commodity where whid=? limit 10");
+		selectQuery.append("Commodity where whid=?");
 		Object arguments[] = { whAdminId };
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
 
@@ -279,9 +279,9 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 	public List<Category> retrieveCategories(Integer commodityId) {
 		List<Category> categorieslist = new ArrayList<Category>();
 		StringBuilder selectQuery = new StringBuilder();
-		selectQuery.append("select * from ");
+		selectQuery.append("select top 10 * from ");
 		selectQuery.append(tablePrefix);
-		selectQuery.append("Category where commodity_id=? limit 10");
+		selectQuery.append("Category where commodity_id=?");
 		Object arguments[] = { commodityId };
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
 
