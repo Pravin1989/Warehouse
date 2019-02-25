@@ -6,7 +6,7 @@
 	<groupId>com.amiablecore</groupId>
 	<artifactId>Warehouse</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<name>Warehouse</name>
 	<description>Demo project for Spring Boot</description>
@@ -87,6 +87,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<executable>true</executable>
+					<mainClass>com.amiablecore.warehouse.WarehouseApplicationStartup</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>
