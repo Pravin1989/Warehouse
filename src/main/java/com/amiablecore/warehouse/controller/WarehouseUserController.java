@@ -100,6 +100,12 @@ public class WarehouseUserController {
 		return new ResponseEntity<List<String>>(units, HttpStatus.OK);
 	}
 
+	@GetMapping(value = "/retrieve/grades/")
+	public ResponseEntity<List<String>> retrieveGrades() {
+		List<String> grades = warehouseUserService.retrieveGrades();
+		return new ResponseEntity<List<String>>(grades, HttpStatus.OK);
+	}
+
 	@PostMapping(value = "/email/")
 	public ResponseEntity<Boolean> sendEmail(@RequestBody Email email) {
 		warehouseUserService.sendEmail(email);

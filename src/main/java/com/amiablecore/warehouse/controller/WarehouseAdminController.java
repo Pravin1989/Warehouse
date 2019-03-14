@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.amiablecore.warehouse.beans.Category;
 import com.amiablecore.warehouse.beans.Commodity;
+import com.amiablecore.warehouse.beans.Grade;
 import com.amiablecore.warehouse.beans.Trader;
 import com.amiablecore.warehouse.beans.WarehouseUser;
 import com.amiablecore.warehouse.service.WarehouseAdminService;
@@ -62,4 +63,18 @@ public class WarehouseAdminController {
 		List<Category> categories = warehouseAdminService.retrieveCategories(commodityId);
 		return new ResponseEntity<List<Category>>(categories, HttpStatus.OK);
 	}
+	
+	@PostMapping(value = "/grade/add/{commodityId}")
+	public ResponseEntity<Grade> addGrade(@RequestBody Grade grade,
+			@PathVariable("commodityId") String commodityId) {
+		Grade newGrade = warehouseAdminService.addGrade(grade, commodityId);
+		return new ResponseEntity<Grade>(newGrade, HttpStatus.CREATED);
+	}
+	
+	@GetMapping(value = "/grade/retrieve/admin/{commodityId}")
+	public ResponseEntity<List<Grade>> retrieveGrades(@PathVariable("commodityId") Integer commodityId) {
+		List<Grade> grades = warehouseAdminService.retrieveGrades(commodityId);
+		return new ResponseEntity<List<Grade>>(grades, HttpStatus.OK);
+	}
+
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.amiablecore.warehouse.beans.Category;
 import com.amiablecore.warehouse.beans.Commodity;
+import com.amiablecore.warehouse.beans.Grade;
 import com.amiablecore.warehouse.beans.Trader;
 import com.amiablecore.warehouse.beans.WarehouseUser;
 
@@ -24,4 +25,8 @@ public interface WarehouseAdminDAO {
 	public List<Commodity> retrieveCommodities(Integer whAdminId);
 
 	public List<Category> retrieveCategories(Integer commodityId);
+	
+	public Grade addGrade(Grade grade, String commodityId);
+
+	public List<Grade> retrieveGrades(Integer commodityId);
 }

@@ -70,7 +70,7 @@ public class LoginDaoImpl implements LoginDAO {
 				response.setWhId((Integer) row.get("whadminid"));
 				response.setUserId((Integer) row.get("whuserid"));
 				response.setLoginIndicator(true);
-				response.setLoggedInMessage("Login Is Done as Admin");
+				response.setLoggedInMessage("Login Is Done as User");
 			}
 			StringBuilder selectQuery = new StringBuilder();
 			selectQuery.append("select * from ");

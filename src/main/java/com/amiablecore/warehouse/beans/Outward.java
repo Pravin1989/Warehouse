@@ -15,6 +15,8 @@ public class Outward {
 	private Double bagWeight;
 	private String lotName;
 	private String unit;
+	private String grade;
+	private String vehicleNo;
 
 	public void setLotName(String lotName) {
 		this.lotName = lotName;
@@ -121,6 +123,22 @@ public class Outward {
 
 	public void setUnit(String unit) {
 		this.unit = unit;
+	}
+
+	public String getGrade() {
+		return grade;
+	}
+
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
+
+	public String getVehicleNo() {
+		return vehicleNo;
+	}
+
+	public void setVehicleNo(String vehicleNo) {
+		this.vehicleNo = vehicleNo;
 	}
 
 }

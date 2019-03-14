@@ -159,9 +159,10 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		insertQuery.append("INSERT INTO ");
 		insertQuery.append(tablePrefix);
 		insertQuery.append("Inward( Weight_Per_Bag, Total_Quantity, total_weight, Inward_Date, ");
-		insertQuery.append(
-				"Physical_Address, Lot_Name, Comodity_Id, Category_Id, Trader_Id, Wh_Admin_Id, wh_User_Id, is_sync_with_outward, unit, last_updated_by, last_updated_on)");
-		insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		insertQuery.append("Physical_Address, Lot_Name, Comodity_Id, Category_Id, Trader_Id, Wh_Admin_Id, ");
+		insertQuery.append("wh_User_Id, is_sync_with_outward, unit, last_updated_by, last_updated_on, grade, ");
+		insertQuery.append("vehicle_no)");
+		insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		KeyHolder holder = new GeneratedKeyHolder();
 		jdbcTemplate.update(new PreparedStatementCreator() {
 			@Override
@@ -192,6 +193,8 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 					ps.setString(13, inward.getUnit());
 					ps.setInt(14, inward.getWhUserId());
 					ps.setDate(15, new Date(new java.util.Date().getTime()));
+					ps.setString(16, inward.getGrade());
+					ps.setString(17, inward.getVehicleNo());
 				} catch (Exception e) {
 					logger.error("Failed To Inward :", e);
 				}
@@ -216,8 +219,8 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		insertQuery.append("INSERT INTO ");
 		insertQuery.append(tablePrefix);
 		insertQuery.append("Outward(Inward_Id, Weight_Per_Bag, Total_Quantity, total_weight, Outward_Date, ");
-		insertQuery.append("lot_name, Trader_Id, Wh_Admin_Id, wh_User_Id, unit)");
-		insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?,?)");
+		insertQuery.append("lot_name, Trader_Id, Wh_Admin_Id, wh_User_Id, unit, grade, vehicle_no)");
+		insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
 		KeyHolder holder = new GeneratedKeyHolder();
 		jdbcTemplate.update(new PreparedStatementCreator() {
 			@Override
@@ -242,6 +245,8 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 					ps.setInt(8, outward.getWhAdminId());
 					ps.setInt(9, outward.getWhUserId());
 					ps.setString(10, outward.getUnit());
+					ps.setString(11, outward.getGrade());
+					ps.setString(12, outward.getVehicleNo());
 				} catch (Exception e) {
 					logger.error("Failed To Outward :", e);
 				}
@@ -284,7 +289,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 			inward.setInwardId((Integer) row.get("inward_id"));
 			inward.setTotalQuantity((Integer) row.get("total_quantity"));
 			inward.setTotalWeight(((BigDecimal) row.get("total_weight")).doubleValue());
-			inward.setWhUserId((Integer)row.get("wh_user_id"));
+			inward.setWhUserId((Integer) row.get("wh_user_id"));
 			inwardList.add(inward);
 		}
 		logger.info(" updateInwardDetails InwardList Size : {}", inwardList.size());
@@ -420,5 +425,21 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		}
 		logger.info("Units Retrieved");
 		return unitList;
+	}
+
+	@Override
+	public List<String> retrieveGrades() {
+		List<String> gradeList = new ArrayList<String>();
+		StringBuilder selectQuery = new StringBuilder();
+		selectQuery.append("select * from ");
+		selectQuery.append(tablePrefix);
+		selectQuery.append("Grades");
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString());
+
+		for (Map<String, Object> row : rows) {
+			gradeList.add((String) row.get("grade_name"));
+		}
+		logger.info("Grades Retrieved");
+		return gradeList;
 	}
 }

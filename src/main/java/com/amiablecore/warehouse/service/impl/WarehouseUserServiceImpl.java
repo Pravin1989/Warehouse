@@ -115,4 +115,9 @@ public class WarehouseUserServiceImpl implements WarehouseUserService {
 		return false;
 	}
 
+	@Override
+	public List<String> retrieveGrades() {
+		return warehouseUserDAO.retrieveGrades();
+	}
+
 }

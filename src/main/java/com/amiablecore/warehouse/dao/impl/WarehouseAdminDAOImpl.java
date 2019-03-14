@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.amiablecore.warehouse.beans.Category;
 import com.amiablecore.warehouse.beans.Commodity;
+import com.amiablecore.warehouse.beans.Grade;
 import com.amiablecore.warehouse.beans.Trader;
 import com.amiablecore.warehouse.beans.WarehouseUser;
 import com.amiablecore.warehouse.dao.WarehouseAdminDAO;
@@ -46,8 +47,8 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 		StringBuilder selectQuery = new StringBuilder();
 		selectQuery.append("select * from ");
 		selectQuery.append(tablePrefix);
-		selectQuery.append("WarehouseUser where contactNo=?");
-		Object arguments[] = { user.getContactNo() };
+		selectQuery.append("WarehouseUser where contactNo=? and whAdminId=?");
+		Object arguments[] = { user.getContactNo(), user.getWhAdminId() };
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
 		if (rows.size() == 0) {
 			StringBuilder insertQuery = new StringBuilder();
@@ -293,5 +294,73 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 		}
 		logger.info("Categories Retrieved");
 		return categorieslist;
+	}
+
+	@Override
+	@Transactional
+	public Grade addGrade(Grade grade, String commodityId) {
+		StringBuilder selectQuery = new StringBuilder();
+		selectQuery.append("select * from ");
+		selectQuery.append(tablePrefix);
+		selectQuery.append("Grades where wh_id=? and commodity_id=? and grade_name=?");
+		Object arguments[] = { grade.getWhAdminId(), Integer.parseInt(commodityId), grade.getGradeName() };
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
+		if (rows.size() == 0) {
+			StringBuilder insertQuery = new StringBuilder();
+			insertQuery.append("INSERT INTO ");
+			insertQuery.append(tablePrefix);
+			insertQuery.append("Grades(grade_name, is_active, is_sync, wh_id, commodity_id)");
+			insertQuery.append("VALUES(?,?,?,?,?)");
+			KeyHolder holder = new GeneratedKeyHolder();
+			jdbcTemplate.update(new PreparedStatementCreator() {
+				@Override
+				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+					PreparedStatement ps = connection.prepareStatement(insertQuery.toString(),
+							Statement.RETURN_GENERATED_KEYS);
+					ps.setString(1, grade.getGradeName());
+					ps.setBoolean(2, grade.isActive());
+					ps.setBoolean(3, grade.isSync());
+					ps.setInt(4, grade.getWhAdminId());
+					ps.setInt(5, Integer.parseInt(commodityId));
+					return ps;
+				}
+			}, holder);
+
+			Integer newGradeId = 0;
+			if (holder.getKeys().size() > 1) {
+				newGradeId = (Integer) holder.getKeys().get("grade_id");
+			}
+			grade.setGradeId(newGradeId);
+			grade.setAlreadyPresent(false);
+			logger.info("Grade Created");
+			return grade;
+		}
+		for (Map<String, Object> row : rows) {
+			grade.setWhAdminId((Integer) row.get("wh_id"));
+			grade.setGradeId((Integer) row.get("grade_id"));
+		}
+		grade.setAlreadyPresent(true);
+		logger.info("Grade Already Present");
+		return grade;
+	}
+
+	@Override
+	public List<Grade> retrieveGrades(Integer commodityId) {
+		List<Grade> gradeList = new ArrayList<Grade>();
+		StringBuilder selectQuery = new StringBuilder();
+		selectQuery.append("select top 10 * from ");
+		selectQuery.append(tablePrefix);
+		selectQuery.append("Grades where commodity_id=?");
+		Object arguments[] = { commodityId };
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
+
+		for (Map<String, Object> row : rows) {
+			Grade grade = new Grade();
+			grade.setGradeId((Integer) row.get("grade_id"));
+			grade.setGradeName((String) row.get("grade_name"));
+			gradeList.add(grade);
+		}
+		logger.info("Grades Retrieved");
+		return gradeList;
 	}
 }

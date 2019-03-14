@@ -32,4 +32,6 @@ public interface WarehouseUserDAO {
 	public String updateTotalWeightOutward(Outward outward);
 
 	public List<String> retrieveUnits();
+
+	public List<String> retrieveGrades();
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.amiablecore.warehouse.beans.Category;
 import com.amiablecore.warehouse.beans.Commodity;
+import com.amiablecore.warehouse.beans.Grade;
 import com.amiablecore.warehouse.beans.Trader;
 import com.amiablecore.warehouse.beans.WarehouseUser;
 import com.amiablecore.warehouse.dao.WarehouseAdminDAO;
@@ -50,5 +51,15 @@ public class WarehouseAdminServiceImpl implements WarehouseAdminService {
 	@Override
 	public List<Category> retrieveCategories(Integer commodityId) {
 		return warehouseAdminDao.retrieveCategories(commodityId);
+	}
+
+	@Override
+	public Grade addGrade(Grade grade, String commodityId) {
+		return warehouseAdminDao.addGrade(grade, commodityId);
+	}
+
+	@Override
+	public List<Grade> retrieveGrades(Integer commodityId) {
+		return warehouseAdminDao.retrieveGrades(commodityId);
 	}
 }
