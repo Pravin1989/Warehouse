@@ -20,6 +20,8 @@ public class Inward implements Comparable<Inward> {
 	private String unit;
 	private String grade;
 	private String vehicleNo;
+	private String commodityName;
+	private String categoryName;
 
 	public void setWhAdminId(Integer whAdminId) {
 		this.whAdminId = whAdminId;
@@ -161,5 +163,21 @@ public class Inward implements Comparable<Inward> {
 
 	public void setGrade(String grade) {
 		this.grade = grade;
+	}
+
+	public String getCommodityName() {
+		return commodityName;
+	}
+
+	public void setCommodityName(String commodityName) {
+		this.commodityName = commodityName;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
 	}
 }

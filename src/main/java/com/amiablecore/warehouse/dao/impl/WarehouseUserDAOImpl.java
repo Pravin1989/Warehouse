@@ -74,7 +74,8 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		StringBuilder selectQuery = new StringBuilder();
 		selectQuery.append("select * from ");
 		selectQuery.append(tablePrefix);
-		selectQuery.append("Trader where LOWER(trader_name) like '%" + traderName.toLowerCase() + "%'");
+		selectQuery.append("Trader where LOWER(trader_name) like '%" + traderName.toLowerCase()
+				+ "%' or LOWER(trader_id) like '%" + traderName.toLowerCase() + "%'");
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString());
 		for (Map<String, Object> row : rows) {
 			Trader trader = new Trader();
@@ -126,6 +127,29 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 			inward.setTotalQuantity((Integer) rows.get(0).get("Total_Quantity"));
 			inward.setWeightPerBag(((BigDecimal) rows.get(0).get("Weight_Per_Bag")).doubleValue());
 			inward.setUnit((String) rows.get(0).get("unit"));
+			inward.setGrade((String) rows.get(0).get("grade"));
+			inward.setVehicleNo((String) rows.get(0).get("vehicle_no"));
+			inward.setPhysicalAddress((String) rows.get(0).get("physical_address"));
+			inward.setCommodityId((Integer) rows.get(0).get("commodity_id"));
+			inward.setCategoryId((Integer) rows.get(0).get("category_id"));
+		}
+		
+		StringBuilder selectCommodityQuery = new StringBuilder();
+		selectCommodityQuery.append("select * from ");
+		selectCommodityQuery.append(tablePrefix);
+		selectCommodityQuery.append("Commodity where id=" + inward.getCommodityId());
+		List<Map<String, Object>> commodityRow = jdbcTemplate.queryForList(selectCommodityQuery.toString());
+		if (rows.size() != 0) {
+			inward.setCommodityName((String) commodityRow.get(0).get("name"));
+		}
+		
+		StringBuilder selectCategoryQuery = new StringBuilder();
+		selectCategoryQuery.append("select * from ");
+		selectCategoryQuery.append(tablePrefix);
+		selectCategoryQuery.append("Category where cat_id=" + inward.getCategoryId());
+		List<Map<String, Object>> categoryRow = jdbcTemplate.queryForList(selectCategoryQuery.toString());
+		if (rows.size() != 0) {
+			inward.setCategoryName((String) categoryRow.get(0).get("category_name"));
 		}
 		logger.info("Lot Details Retrieved");
 		return inward;
@@ -159,7 +183,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		insertQuery.append("INSERT INTO ");
 		insertQuery.append(tablePrefix);
 		insertQuery.append("Inward( Weight_Per_Bag, Total_Quantity, total_weight, Inward_Date, ");
-		insertQuery.append("Physical_Address, Lot_Name, Comodity_Id, Category_Id, Trader_Id, Wh_Admin_Id, ");
+		insertQuery.append("Physical_Address, Lot_Name, Commodity_Id, Category_Id, Trader_Id, Wh_Admin_Id, ");
 		insertQuery.append("wh_User_Id, is_sync_with_outward, unit, last_updated_by, last_updated_on, grade, ");
 		insertQuery.append("vehicle_no)");
 		insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");

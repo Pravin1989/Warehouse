@@ -16,7 +16,8 @@ public class Trader {
 	private boolean active;
 	private boolean sync;
 	private boolean alreadyPresent;
-
+	private String traderAddress;
+	
 	public boolean isActive() {
 		return active;
 	}
@@ -114,5 +115,13 @@ public class Trader {
 
 	public void setWhAdminId(Integer whId) {
 		this.whAdminId = whId;
+	}
+
+	public String getTraderAddress() {
+		return traderAddress;
+	}
+
+	public void setTraderAddress(String traderAddress) {
+		this.traderAddress = traderAddress;
 	}
 }

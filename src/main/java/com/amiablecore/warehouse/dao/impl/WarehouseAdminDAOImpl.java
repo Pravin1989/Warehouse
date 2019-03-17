@@ -107,8 +107,8 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 			insertQuery.append("INSERT INTO ");
 			insertQuery.append(tablePrefix);
 			insertQuery.append(
-					"Trader(trader_name, trader_email, trader_contact_no, state, city, pin_code, is_active, is_sync, wh_id)");
-			insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?)");
+					"Trader(trader_name, trader_email, trader_contact_no, state, city, pin_code, is_active, is_sync, wh_id, trader_address)");
+			insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?,?)");
 			KeyHolder holder = new GeneratedKeyHolder();
 			jdbcTemplate.update(new PreparedStatementCreator() {
 				@Override
@@ -124,6 +124,7 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 					ps.setBoolean(7, trader.isActive());
 					ps.setBoolean(8, trader.isSync());
 					ps.setInt(9, trader.getWhAdminId());
+					ps.setString(10, trader.getTraderAddress());
 					return ps;
 				}
 			}, holder);
