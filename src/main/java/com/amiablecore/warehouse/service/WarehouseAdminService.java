@@ -29,4 +29,6 @@ public interface WarehouseAdminService {
 	public Grade addGrade(Grade grade, String commodityId);
 
 	public List<Grade> retrieveGrades(Integer commodityId);
+	
+	public Boolean removeCommodity(Commodity commodity);
 }

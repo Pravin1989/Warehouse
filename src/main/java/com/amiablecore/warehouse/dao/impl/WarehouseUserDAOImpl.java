@@ -54,8 +54,8 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		StringBuilder selectQuery = new StringBuilder();
 		selectQuery.append("select * from ");
 		selectQuery.append(tablePrefix);
-		selectQuery.append("Category where commodity_id=?");
-		Object arguments[] = { commodityId };
+		selectQuery.append("Category where commodity_id=? and is_active=?");
+		Object arguments[] = { commodityId, true };
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
 
 		for (Map<String, Object> row : rows) {
@@ -96,8 +96,8 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		StringBuilder selectQuery = new StringBuilder();
 		selectQuery.append("select * from ");
 		selectQuery.append(tablePrefix);
-		selectQuery.append("Commodity where whid=?");
-		Object arguments[] = { whAdminId };
+		selectQuery.append("Commodity where whid=? and isactive=?");
+		Object arguments[] = { whAdminId, true };
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
 
 		for (Map<String, Object> row : rows) {
@@ -457,8 +457,8 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		StringBuilder selectQuery = new StringBuilder();
 		selectQuery.append("select * from ");
 		selectQuery.append(tablePrefix);
-		selectQuery.append("Grades where commodity_id=?");
-		Object arguments[] = { commodityId };
+		selectQuery.append("Grades where commodity_id=? and is_active=?");
+		Object arguments[] = { commodityId, true };
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
 
 		for (Map<String, Object> row : rows) {

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,18 +64,23 @@ public class WarehouseAdminController {
 		List<Category> categories = warehouseAdminService.retrieveCategories(commodityId);
 		return new ResponseEntity<List<Category>>(categories, HttpStatus.OK);
 	}
-	
+
 	@PostMapping(value = "/grade/add/{commodityId}")
-	public ResponseEntity<Grade> addGrade(@RequestBody Grade grade,
-			@PathVariable("commodityId") String commodityId) {
+	public ResponseEntity<Grade> addGrade(@RequestBody Grade grade, @PathVariable("commodityId") String commodityId) {
 		Grade newGrade = warehouseAdminService.addGrade(grade, commodityId);
 		return new ResponseEntity<Grade>(newGrade, HttpStatus.CREATED);
 	}
-	
+
 	@GetMapping(value = "/grade/retrieve/admin/{commodityId}")
 	public ResponseEntity<List<Grade>> retrieveGrades(@PathVariable("commodityId") Integer commodityId) {
 		List<Grade> grades = warehouseAdminService.retrieveGrades(commodityId);
 		return new ResponseEntity<List<Grade>>(grades, HttpStatus.OK);
+	}
+
+	@DeleteMapping(value = "/commodity/remove/")
+	public ResponseEntity<Boolean> removeItem(@RequestBody Commodity commodity) {
+		Boolean deleted = warehouseAdminService.removeCommodity(commodity);
+		return new ResponseEntity<Boolean>(deleted, HttpStatus.OK);
 	}
 
 }

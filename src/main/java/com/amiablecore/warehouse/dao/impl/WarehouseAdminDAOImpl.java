@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -179,7 +180,7 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 					PreparedStatement ps = connection.prepareStatement(insertQuery.toString(),
 							Statement.RETURN_GENERATED_KEYS);
 					ps.setString(1, commodity.getCommodityName());
-					ps.setBoolean(2, commodity.isActive());
+					ps.setBoolean(2, true);
 					ps.setBoolean(3, commodity.isSync());
 					ps.setInt(4, commodity.getWhAdminId());
 					return ps;
@@ -200,6 +201,14 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 			commodity.setCommodityId((Integer) row.get("id"));
 		}
 		commodity.setAlreadyPresent(true);
+		StringBuilder activateQuery = new StringBuilder();
+		activateQuery.append("update ");
+		activateQuery.append(tablePrefix);
+		activateQuery.append("Commodity set isactive=? where id=? and whid=?");
+		Object arg[] = { true, commodity.getCommodityId(), commodity.getWhAdminId() };
+		int[] types = { Types.BOOLEAN, Types.BIGINT, Types.BIGINT };
+		int activatedRows = jdbcTemplate.update(activateQuery.toString(), arg, types);
+		logger.info("Commodity Activated : {}", activatedRows);
 		logger.info("Commodity Already Present");
 		return commodity;
 	}
@@ -226,7 +235,7 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 					PreparedStatement ps = connection.prepareStatement(insertQuery.toString(),
 							Statement.RETURN_GENERATED_KEYS);
 					ps.setString(1, category.getCategoryName());
-					ps.setBoolean(2, category.isActive());
+					ps.setBoolean(2, true);
 					ps.setBoolean(3, category.isSync());
 					ps.setInt(4, category.getWhAdminId());
 					ps.setInt(5, Integer.parseInt(commodityId));
@@ -258,8 +267,8 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 		StringBuilder selectQuery = new StringBuilder();
 		selectQuery.append("select top 10 * from ");
 		selectQuery.append(tablePrefix);
-		selectQuery.append("Commodity where whid=?");
-		Object arguments[] = { whAdminId };
+		selectQuery.append("Commodity where whid=? and isactive=?");
+		Object arguments[] = { whAdminId, true };
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
 
 		for (Map<String, Object> row : rows) {
@@ -278,8 +287,8 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 		StringBuilder selectQuery = new StringBuilder();
 		selectQuery.append("select top 10 * from ");
 		selectQuery.append(tablePrefix);
-		selectQuery.append("Category where commodity_id=?");
-		Object arguments[] = { commodityId };
+		selectQuery.append("Category where commodity_id=? and is_active=?");
+		Object arguments[] = { commodityId, true };
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
 
 		for (Map<String, Object> row : rows) {
@@ -314,7 +323,7 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 					PreparedStatement ps = connection.prepareStatement(insertQuery.toString(),
 							Statement.RETURN_GENERATED_KEYS);
 					ps.setString(1, grade.getGradeName());
-					ps.setBoolean(2, grade.isActive());
+					ps.setBoolean(2, true);
 					ps.setBoolean(3, grade.isSync());
 					ps.setInt(4, grade.getWhAdminId());
 					ps.setInt(5, Integer.parseInt(commodityId));
@@ -346,8 +355,8 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 		StringBuilder selectQuery = new StringBuilder();
 		selectQuery.append("select top 10 * from ");
 		selectQuery.append(tablePrefix);
-		selectQuery.append("Grades where commodity_id=?");
-		Object arguments[] = { commodityId };
+		selectQuery.append("Grades where commodity_id=? and is_active=?");
+		Object arguments[] = { commodityId, true };
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
 
 		for (Map<String, Object> row : rows) {
@@ -358,5 +367,18 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 		}
 		logger.info("Grades Retrieved");
 		return gradeList;
+	}
+
+	@Override
+	public Boolean removeCommodity(Commodity commodity) {
+		StringBuilder deleteQuery = new StringBuilder();
+		deleteQuery.append("update ");
+		deleteQuery.append(tablePrefix);
+		deleteQuery.append("Commodity set isactive=? where id=? and whid=?");
+		Object arguments[] = { false, commodity.getCommodityId(), commodity.getWhAdminId() };
+		int[] types = { Types.BOOLEAN, Types.BIGINT, Types.BIGINT };
+		int rows = jdbcTemplate.update(deleteQuery.toString(), arguments, types);
+		logger.info("Commodity DeActivated : {}", rows);
+		return rows == 1;
 	}
 }
