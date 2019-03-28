@@ -36,5 +36,5 @@ public interface WarehouseUserService {
 	
 	public boolean sendEmail(Email email);
 	
-	public List<String> retrieveGrades();
+	public List<String> retrieveGrades(Integer commodityId);
 }

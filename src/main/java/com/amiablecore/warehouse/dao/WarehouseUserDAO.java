@@ -33,5 +33,5 @@ public interface WarehouseUserDAO {
 
 	public List<String> retrieveUnits();
 
-	public List<String> retrieveGrades();
+	public List<String> retrieveGrades(Integer commodityId);
 }

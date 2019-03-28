@@ -162,15 +162,10 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 		StringBuilder selectQuery = new StringBuilder();
 		selectQuery.append("select * from ");
 		selectQuery.append(tablePrefix);
-		selectQuery.append("Commodity where name=? ");
-		Object arguments[] = { commodity.getCommodityName() };
+		selectQuery.append("Commodity where name=?  and whid=?");
+		Object arguments[] = { commodity.getCommodityName(), commodity.getWhAdminId() };
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
 		if (rows.size() == 0) {
-			// Object[] params = new Object[] { commodity.getCommodityName(),
-			// commodity.isActive(), commodity.isSync(),
-			// commodity.getWhAdminId() };
-			// int[] types = new int[] { Types.VARCHAR, Types.BOOLEAN, Types.BOOLEAN,
-			// Types.INTEGER };
 			StringBuilder insertQuery = new StringBuilder();
 			insertQuery.append("INSERT INTO ");
 			insertQuery.append(tablePrefix);

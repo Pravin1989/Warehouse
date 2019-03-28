@@ -133,7 +133,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 			inward.setCommodityId((Integer) rows.get(0).get("commodity_id"));
 			inward.setCategoryId((Integer) rows.get(0).get("category_id"));
 		}
-		
+
 		StringBuilder selectCommodityQuery = new StringBuilder();
 		selectCommodityQuery.append("select * from ");
 		selectCommodityQuery.append(tablePrefix);
@@ -142,7 +142,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		if (rows.size() != 0) {
 			inward.setCommodityName((String) commodityRow.get(0).get("name"));
 		}
-		
+
 		StringBuilder selectCategoryQuery = new StringBuilder();
 		selectCategoryQuery.append("select * from ");
 		selectCategoryQuery.append(tablePrefix);
@@ -452,13 +452,14 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 	}
 
 	@Override
-	public List<String> retrieveGrades() {
+	public List<String> retrieveGrades(Integer commodityId) {
 		List<String> gradeList = new ArrayList<String>();
 		StringBuilder selectQuery = new StringBuilder();
 		selectQuery.append("select * from ");
 		selectQuery.append(tablePrefix);
-		selectQuery.append("Grades");
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString());
+		selectQuery.append("Grades where commodity_id=?");
+		Object arguments[] = { commodityId };
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
 
 		for (Map<String, Object> row : rows) {
 			gradeList.add((String) row.get("grade_name"));

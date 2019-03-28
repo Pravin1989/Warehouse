@@ -100,9 +100,9 @@ public class WarehouseUserController {
 		return new ResponseEntity<List<String>>(units, HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/retrieve/grades/")
-	public ResponseEntity<List<String>> retrieveGrades() {
-		List<String> grades = warehouseUserService.retrieveGrades();
+	@GetMapping(value = "/retrieve/grades/{commodityId}")
+	public ResponseEntity<List<String>> retrieveGrades(@PathVariable("commodityId") Integer commodityId) {
+		List<String> grades = warehouseUserService.retrieveGrades(commodityId);
 		return new ResponseEntity<List<String>>(grades, HttpStatus.OK);
 	}
 
