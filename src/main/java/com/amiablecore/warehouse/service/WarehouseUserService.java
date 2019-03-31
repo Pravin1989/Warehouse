@@ -34,7 +34,5 @@ public interface WarehouseUserService {
 
 	public List<String> retrieveUnits();
 	
-	public boolean sendEmail(Email email);
-	
 	public List<String> retrieveGrades(Integer commodityId);
 }

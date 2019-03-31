@@ -67,4 +67,24 @@ public class WarehouseAdminServiceImpl implements WarehouseAdminService {
 	public Boolean removeCommodity(Commodity commodity) {
 		return warehouseAdminDao.removeCommodity(commodity);
 	}
+
+	@Override
+	public Boolean removeCategory(Category category) {
+		return warehouseAdminDao.removeCategory(category);
+	}
+
+	@Override
+	public Boolean removeGrade(Grade grade) {
+		return warehouseAdminDao.removeGrade(grade);
+	}
+
+	@Override
+	public List<Category> retrieveCategoriesToRemove(Integer whAdminId) {
+		return warehouseAdminDao.retrieveCategoriesToRemove(whAdminId);
+	}
+
+	@Override
+	public List<Grade> retrieveGradesToRemove(Integer whAdminId) {
+		return warehouseAdminDao.retrieveGradesToRemove(whAdminId);
+	}
 }

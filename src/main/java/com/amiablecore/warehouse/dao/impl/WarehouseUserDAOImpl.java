@@ -25,9 +25,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.amiablecore.warehouse.beans.Category;
 import com.amiablecore.warehouse.beans.Commodity;
+import com.amiablecore.warehouse.beans.Email;
 import com.amiablecore.warehouse.beans.Inward;
 import com.amiablecore.warehouse.beans.Outward;
 import com.amiablecore.warehouse.beans.Trader;
+import com.amiablecore.warehouse.config.EmailUtil;
 import com.amiablecore.warehouse.dao.WarehouseUserDAO;
 
 @Repository("warehouseUserDAO")
@@ -233,6 +235,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		Inward lot = new Inward();
 		lot.setInwardId(newlyAddedInwardId);
 		logger.info("Inward Lot Added :");
+		sendEmailToTraderForInward(inward);
 		return lot;
 	}
 
@@ -285,6 +288,9 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		Outward outLot = new Outward();
 		outLot.setOutwardId(newlyAddedOutwardId);
 		logger.info("Outward Lot Added :");
+		
+		sendEmailToTraderForOutward(outward);
+		
 		if (outward.getTotalWeight() == null) {
 			StringBuilder updateInwardQuery = new StringBuilder();
 			int[] types = { Types.BOOLEAN, Types.INTEGER };
@@ -466,5 +472,43 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		}
 		logger.info("Grades Retrieved");
 		return gradeList;
+	}
+
+	public void sendEmailToTraderForInward(Inward inward) {
+		StringBuilder selectQuery = new StringBuilder();
+		selectQuery.append("select trader_email from ");
+		selectQuery.append(tablePrefix);
+		selectQuery.append("Trader where id=?");
+		Object arguments[] = { inward.getTraderId() };
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
+		String to = "";
+		if (rows.size() != 0) {
+			to = rows.get(0).get("trader_email").toString();
+		}
+		Email email = new Email();
+		email.setMessage("Lot No " + inward.getLotName() + " Inwarded");
+		email.setToEmail(to);
+		email.setSubject("Inward Done");
+		EmailUtil.sendEmail(email);
+		logger.info("Email Notification for Inward Done");
+	}
+
+	public void sendEmailToTraderForOutward(Outward out) {
+		StringBuilder selectQuery = new StringBuilder();
+		selectQuery.append("select trader_email from ");
+		selectQuery.append(tablePrefix);
+		selectQuery.append("Trader where id=?");
+		Object arguments[] = { out.getTraderId() };
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
+		String to = "";
+		if (rows.size() != 0) {
+			to = rows.get(0).get("trader_email").toString();
+		}
+		Email email = new Email();
+		email.setMessage("Lot No " + out.getLotName() + " Outwarded");
+		email.setToEmail(to);
+		email.setSubject("Outward Done");
+		EmailUtil.sendEmail(email);
+		logger.info("Email Notification for Inward Done");
 	}
 }

@@ -265,7 +265,7 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 	public List<Commodity> retrieveCommodities(Integer whAdminId) {
 		List<Commodity> commoditiesList = new ArrayList<>();
 		StringBuilder selectQuery = new StringBuilder();
-		selectQuery.append("select top 10 * from ");
+		selectQuery.append("select * from ");
 		selectQuery.append(tablePrefix);
 		selectQuery.append("Commodity where whid=? and isactive=?");
 		Object arguments[] = { whAdminId, true };
@@ -353,7 +353,7 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 	public List<Grade> retrieveGrades(Integer commodityId) {
 		List<Grade> gradeList = new ArrayList<Grade>();
 		StringBuilder selectQuery = new StringBuilder();
-		selectQuery.append("select top 10 * from ");
+		selectQuery.append("select * from ");
 		selectQuery.append(tablePrefix);
 		selectQuery.append("Grades where commodity_id=? and is_active=?");
 		Object arguments[] = { commodityId, true };
@@ -380,5 +380,72 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 		int rows = jdbcTemplate.update(deleteQuery.toString(), arguments, types);
 		logger.info("Commodity DeActivated : {}", rows);
 		return rows == 1;
+	}
+
+	@Override
+	public Boolean removeCategory(Category category) {
+		StringBuilder deleteQuery = new StringBuilder();
+		deleteQuery.append("update ");
+		deleteQuery.append(tablePrefix);
+		deleteQuery.append("Category set is_active=? where cat_id=? and wh_id=?");
+		Object arguments[] = { false, category.getCategoryId(), category.getWhAdminId() };
+		int[] types = { Types.BOOLEAN, Types.BIGINT, Types.BIGINT };
+		int rows = jdbcTemplate.update(deleteQuery.toString(), arguments, types);
+		logger.info("Category DeActivated : {}", rows);
+		return rows == 1;
+	}
+
+	@Override
+	public Boolean removeGrade(Grade grade) {
+		StringBuilder deleteQuery = new StringBuilder();
+		deleteQuery.append("update ");
+		deleteQuery.append(tablePrefix);
+		deleteQuery.append("Grades set is_active=? where grade_id=? and wh_id=?");
+		Object arguments[] = { false, grade.getGradeId(), grade.getWhAdminId() };
+		int[] types = { Types.BOOLEAN, Types.BIGINT, Types.BIGINT };
+		int rows = jdbcTemplate.update(deleteQuery.toString(), arguments, types);
+		logger.info("Grade DeActivated : {}", rows);
+		return rows == 1;
+	}
+
+	@Override
+	public List<Category> retrieveCategoriesToRemove(Integer whAdminId) {
+		List<Category> categorieslist = new ArrayList<Category>();
+		StringBuilder selectQuery = new StringBuilder();
+		selectQuery.append("select * from ");
+		selectQuery.append(tablePrefix);
+		selectQuery.append("Category where wh_id=? and is_active=?");
+		Object arguments[] = { whAdminId, true };
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
+
+		for (Map<String, Object> row : rows) {
+			Category category = new Category();
+			category.setCategoryId((Integer) row.get("cat_id"));
+			category.setCategoryName((String) row.get("category_name"));
+			categorieslist.add(category);
+		}
+		logger.info("Categories Retrieved");
+		return categorieslist;
+
+	}
+
+	@Override
+	public List<Grade> retrieveGradesToRemove(Integer whAdminId) {
+		List<Grade> gradeList = new ArrayList<Grade>();
+		StringBuilder selectQuery = new StringBuilder();
+		selectQuery.append("select * from ");
+		selectQuery.append(tablePrefix);
+		selectQuery.append("Grades where wh_id=? and is_active=?");
+		Object arguments[] = { whAdminId, true };
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
+
+		for (Map<String, Object> row : rows) {
+			Grade grade = new Grade();
+			grade.setGradeId((Integer) row.get("grade_id"));
+			grade.setGradeName((String) row.get("grade_name"));
+			gradeList.add(grade);
+		}
+		logger.info("Grades Retrieved");
+		return gradeList;
 	}
 }

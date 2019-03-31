@@ -2,21 +2,17 @@ package com.amiablecore.warehouse.controller;
 
 import java.util.List;
 
-import javax.websocket.server.PathParam;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.amiablecore.warehouse.beans.Category;
 import com.amiablecore.warehouse.beans.Commodity;
-import com.amiablecore.warehouse.beans.Email;
 import com.amiablecore.warehouse.beans.Inward;
 import com.amiablecore.warehouse.beans.Outward;
 import com.amiablecore.warehouse.beans.Trader;
@@ -105,11 +101,4 @@ public class WarehouseUserController {
 		List<String> grades = warehouseUserService.retrieveGrades(commodityId);
 		return new ResponseEntity<List<String>>(grades, HttpStatus.OK);
 	}
-
-	@PostMapping(value = "/email/")
-	public ResponseEntity<Boolean> sendEmail(@RequestBody Email email) {
-		warehouseUserService.sendEmail(email);
-		return new ResponseEntity<Boolean>(HttpStatus.OK);
-	}
-
 }

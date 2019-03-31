@@ -25,10 +25,18 @@ public interface WarehouseAdminDAO {
 	public List<Commodity> retrieveCommodities(Integer whAdminId);
 
 	public List<Category> retrieveCategories(Integer commodityId);
-	
+
 	public Grade addGrade(Grade grade, String commodityId);
 
 	public List<Grade> retrieveGrades(Integer commodityId);
-	
+
+	public List<Category> retrieveCategoriesToRemove(Integer whAdminId);
+
+	public List<Grade> retrieveGradesToRemove(Integer whAdminId);
+
 	public Boolean removeCommodity(Commodity commodity);
+
+	public Boolean removeCategory(Category category);
+
+	public Boolean removeGrade(Grade grade);
 }

@@ -77,10 +77,33 @@ public class WarehouseAdminController {
 		return new ResponseEntity<List<Grade>>(grades, HttpStatus.OK);
 	}
 
+	@GetMapping(value = "/category/retrieve/{whAdminId}")
+	public ResponseEntity<List<Category>> retrieveCategoriesToRemove(@PathVariable("whAdminId") Integer whAdminId) {
+		List<Category> categoryList = warehouseAdminService.retrieveCategoriesToRemove(whAdminId);
+		return new ResponseEntity<List<Category>>(categoryList, HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/grades/retrieve/{whAdminId}")
+	public ResponseEntity<List<Grade>> retrieveGradesToRemove(@PathVariable("whAdminId") Integer whAdminId) {
+		List<Grade> gradeList = warehouseAdminService.retrieveGradesToRemove(whAdminId);
+		return new ResponseEntity<List<Grade>>(gradeList, HttpStatus.OK);
+	}
+
 	@DeleteMapping(value = "/commodity/remove/")
 	public ResponseEntity<Boolean> removeItem(@RequestBody Commodity commodity) {
 		Boolean deleted = warehouseAdminService.removeCommodity(commodity);
 		return new ResponseEntity<Boolean>(deleted, HttpStatus.OK);
 	}
 
+	@DeleteMapping(value = "/category/remove/")
+	public ResponseEntity<Boolean> removeCategory(@RequestBody Category category) {
+		Boolean deleted = warehouseAdminService.removeCategory(category);
+		return new ResponseEntity<Boolean>(deleted, HttpStatus.OK);
+	}
+
+	@DeleteMapping(value = "/grade/remove/")
+	public ResponseEntity<Boolean> removeGrade(@RequestBody Grade grade) {
+		Boolean deleted = warehouseAdminService.removeGrade(grade);
+		return new ResponseEntity<Boolean>(deleted, HttpStatus.OK);
+	}
 }

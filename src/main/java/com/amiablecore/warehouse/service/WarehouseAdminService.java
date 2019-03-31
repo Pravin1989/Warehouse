@@ -22,13 +22,22 @@ public interface WarehouseAdminService {
 
 	public Category addCategory(Category category, String commodityId);
 
+	public Grade addGrade(Grade grade, String commodityId);
+
 	public List<Commodity> retrieveCommodities(Integer whAdminId);
 
 	public List<Category> retrieveCategories(Integer commodityId);
 
-	public Grade addGrade(Grade grade, String commodityId);
-
 	public List<Grade> retrieveGrades(Integer commodityId);
-	
+
 	public Boolean removeCommodity(Commodity commodity);
+
+	public Boolean removeCategory(Category category);
+
+	public Boolean removeGrade(Grade grade);
+
+	public List<Category> retrieveCategoriesToRemove(Integer whAdminId);
+
+	public List<Grade> retrieveGradesToRemove(Integer whAdminId);
+
 }
