@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<springProfile name="dev">
+				<pattern>%d{yy-MMMM-dd HH:mm:ss:SSS} %5p %t %c{2}:%L - %m%n
+				</pattern>
+			</springProfile>
+			<springProfile name="prod">
+				<pattern>%d{yy-MM-dd E HH:mm:ss.SSS} %5p %t %c{2}:%L - %m%n
+				</pattern>
+			</springProfile>
+		</encoder>
+	</appender>
+
+	<appender name="File_Appender"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>c:/logs/timeBasedlogFile.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>c:/logs/timeBasedlogFile.%d{yyyy-MM-dd-HH-mm}.log
+			</fileNamePattern>
+			<maxHistory>30</maxHistory>
+			<!-- <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+            <maxFileSize>10KB</maxFileSize>
+        </timeBasedFileNamingAndTriggeringPolicy> -->
+			
+		</rollingPolicy>
+		<encoder>
+			<pattern>%relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<springProfile name="dev">
+		<root level="INFO">
+			<appender-ref ref="stdout" />
+			<!-- <appender-ref ref="File_Appender" /> -->
+		</root>
+	</springProfile>
+	<springProfile name="prod">
+		<root level="INFO">
+			<appender-ref ref="stdout" />
+		</root>
+	</springProfile>
+</configuration>

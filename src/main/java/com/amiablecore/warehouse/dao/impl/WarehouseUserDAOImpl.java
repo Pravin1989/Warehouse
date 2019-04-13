@@ -30,6 +30,7 @@ import com.amiablecore.warehouse.beans.Inward;
 import com.amiablecore.warehouse.beans.Outward;
 import com.amiablecore.warehouse.beans.Trader;
 import com.amiablecore.warehouse.config.EmailUtil;
+import com.amiablecore.warehouse.config.SMSUtil;
 import com.amiablecore.warehouse.dao.WarehouseUserDAO;
 
 @Repository("warehouseUserDAO")
@@ -180,62 +181,86 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 	@Override
 	@Transactional
 	public Inward storeInwardDetails(Inward inward) {
-		logger.info("Inward Lot Adding :");
-		StringBuilder insertQuery = new StringBuilder();
-		insertQuery.append("INSERT INTO ");
-		insertQuery.append(tablePrefix);
-		insertQuery.append("Inward( Weight_Per_Bag, Total_Quantity, total_weight, Inward_Date, ");
-		insertQuery.append("Physical_Address, Lot_Name, Commodity_Id, Category_Id, Trader_Id, Wh_Admin_Id, ");
-		insertQuery.append("wh_User_Id, is_sync_with_outward, unit, last_updated_by, last_updated_on, grade, ");
-		insertQuery.append("vehicle_no)");
-		insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-		KeyHolder holder = new GeneratedKeyHolder();
-		jdbcTemplate.update(new PreparedStatementCreator() {
-			@Override
-			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-				PreparedStatement ps = connection.prepareStatement(insertQuery.toString(),
-						Statement.RETURN_GENERATED_KEYS);
 
-				SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy");
-				try {
-					java.util.Date date = sdf1.parse(inward.getInwardDate());
-					java.sql.Date sqlStartDate;
-					sqlStartDate = new java.sql.Date(date.getTime());
-					ps.setDouble(1, inward.getWeightPerBag());
-					ps.setInt(2, inward.getTotalQuantity());
-					if (inward.getTotalWeight() != null)
-						ps.setDouble(3, inward.getTotalWeight());
-					else
-						ps.setDouble(3, -1);
-					ps.setDate(4, sqlStartDate);
-					ps.setString(5, inward.getPhysicalAddress());
-					ps.setString(6, inward.getLotName());
-					ps.setInt(7, inward.getCommodityId());
-					ps.setInt(8, inward.getCategoryId());
-					ps.setInt(9, inward.getTraderId());
-					ps.setInt(10, inward.getWhAdminId());
-					ps.setInt(11, inward.getWhUserId());
-					ps.setBoolean(12, true);
-					ps.setString(13, inward.getUnit());
-					ps.setInt(14, inward.getWhUserId());
-					ps.setDate(15, new Date(new java.util.Date().getTime()));
-					ps.setString(16, inward.getGrade());
-					ps.setString(17, inward.getVehicleNo());
-				} catch (Exception e) {
-					logger.error("Failed To Inward :", e);
-				}
-				return ps;
-			}
-		}, holder);
-
-		Integer newlyAddedInwardId = 0;
-		if (holder.getKeys().size() > 1) {
-			newlyAddedInwardId = (Integer) holder.getKeys().get("inward_id");
-		}
+		StringBuilder selectQuery = new StringBuilder();
+		selectQuery.append("select * from ");
+		selectQuery.append(tablePrefix);
+		selectQuery.append("Inward where lot_name=? and Wh_Admin_Id=?");
+		Object arguments[] = { inward.getLotName(), inward.getWhAdminId() };
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
 		Inward lot = new Inward();
-		lot.setInwardId(newlyAddedInwardId);
-		logger.info("Inward Lot Added :");
-		sendEmailToTraderForInward(inward);
+		if (rows.size() == 0) {
+			logger.info("Inward Lot Adding :");
+			StringBuilder insertQuery = new StringBuilder();
+			insertQuery.append("INSERT INTO ");
+			insertQuery.append(tablePrefix);
+			insertQuery.append("Inward( Weight_Per_Bag, Total_Quantity, total_weight, Inward_Date, ");
+			insertQuery.append("Physical_Address, Lot_Name, Commodity_Id, Category_Id, Trader_Id, Wh_Admin_Id, ");
+			insertQuery.append("wh_User_Id, is_sync_with_outward, unit, last_updated_by, last_updated_on, grade, ");
+			insertQuery.append("vehicle_no)");
+			insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+			KeyHolder holder = new GeneratedKeyHolder();
+			jdbcTemplate.update(new PreparedStatementCreator() {
+				@Override
+				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+					PreparedStatement ps = connection.prepareStatement(insertQuery.toString(),
+							Statement.RETURN_GENERATED_KEYS);
+
+					SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy");
+					try {
+						java.util.Date date = sdf1.parse(inward.getInwardDate());
+						java.sql.Date sqlStartDate;
+						sqlStartDate = new java.sql.Date(date.getTime());
+						ps.setDouble(1, inward.getWeightPerBag());
+						ps.setInt(2, inward.getTotalQuantity());
+						if (inward.getTotalWeight() != null)
+							ps.setDouble(3, inward.getTotalWeight());
+						else
+							ps.setDouble(3, -1);
+						ps.setDate(4, sqlStartDate);
+						ps.setString(5, inward.getPhysicalAddress());
+						ps.setString(6, inward.getLotName());
+						ps.setInt(7, inward.getCommodityId());
+						ps.setInt(8, inward.getCategoryId());
+						ps.setInt(9, inward.getTraderId());
+						ps.setInt(10, inward.getWhAdminId());
+						ps.setInt(11, inward.getWhUserId());
+						ps.setBoolean(12, true);
+						ps.setString(13, inward.getUnit());
+						ps.setInt(14, inward.getWhUserId());
+						ps.setDate(15, new Date(new java.util.Date().getTime()));
+						ps.setString(16, inward.getGrade());
+						ps.setString(17, inward.getVehicleNo());
+					} catch (Exception e) {
+						logger.error("Failed To Inward :", e);
+					}
+					return ps;
+				}
+			}, holder);
+
+			Integer newlyAddedInwardId = 0;
+			if (holder.getKeys().size() > 1) {
+				newlyAddedInwardId = (Integer) holder.getKeys().get("inward_id");
+				inward.setWhId((String) holder.getKeys().get("whid"));
+			}
+			lot.setInwardId(newlyAddedInwardId);
+			lot.setCommodityId(inward.getCommodityId());
+			lot.setLotName(inward.getLotName());
+			lot.setWhAdminId(inward.getWhAdminId());
+			lot.setTraderId(inward.getTraderId());
+			lot.setLotAlreadyPresent(false);
+			logger.info("Inward Lot Added :");
+			sendEmailToTraderForInward(lot);
+			return lot;
+		} else {
+			for (Map<String, Object> row : rows) {
+				lot.setWhAdminId((Integer) row.get("Wh_Admin_Id"));
+				lot.setLotName((String) row.get("Lot_Name"));
+			}
+			lot.setLotAlreadyPresent(true);
+			logger.info("Lot Already Present");
+		}
+
 		return lot;
 	}
 
@@ -246,8 +271,8 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		insertQuery.append("INSERT INTO ");
 		insertQuery.append(tablePrefix);
 		insertQuery.append("Outward(Inward_Id, Weight_Per_Bag, Total_Quantity, total_weight, Outward_Date, ");
-		insertQuery.append("lot_name, Trader_Id, Wh_Admin_Id, wh_User_Id, unit, grade, vehicle_no)");
-		insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+		insertQuery.append("lot_name, Trader_Id, Wh_Admin_Id, wh_User_Id, unit, grade)");
+		insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?,?,?)");
 		KeyHolder holder = new GeneratedKeyHolder();
 		jdbcTemplate.update(new PreparedStatementCreator() {
 			@Override
@@ -273,7 +298,6 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 					ps.setInt(9, outward.getWhUserId());
 					ps.setString(10, outward.getUnit());
 					ps.setString(11, outward.getGrade());
-					ps.setString(12, outward.getVehicleNo());
 				} catch (Exception e) {
 					logger.error("Failed To Outward :", e);
 				}
@@ -288,9 +312,9 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		Outward outLot = new Outward();
 		outLot.setOutwardId(newlyAddedOutwardId);
 		logger.info("Outward Lot Added :");
-		
+
 		sendEmailToTraderForOutward(outward);
-		
+
 		if (outward.getTotalWeight() == null) {
 			StringBuilder updateInwardQuery = new StringBuilder();
 			int[] types = { Types.BOOLEAN, Types.INTEGER };
@@ -476,39 +500,100 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 
 	public void sendEmailToTraderForInward(Inward inward) {
 		StringBuilder selectQuery = new StringBuilder();
-		selectQuery.append("select trader_email from ");
+		selectQuery.append("select trader_email, trader_contact_no from ");
 		selectQuery.append(tablePrefix);
 		selectQuery.append("Trader where id=?");
 		Object arguments[] = { inward.getTraderId() };
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
 		String to = "";
+		String number = "";
 		if (rows.size() != 0) {
 			to = rows.get(0).get("trader_email").toString();
+			number = rows.get(0).get("trader_contact_no").toString();
 		}
+
+		StringBuilder selectInwardJoinQuery = new StringBuilder();
+		selectInwardJoinQuery.append("select w.whid, c.name from ");
+		selectInwardJoinQuery.append(tablePrefix);
+		selectInwardJoinQuery.append("Warehouse w, ");
+		selectInwardJoinQuery.append(tablePrefix);
+		selectInwardJoinQuery.append("Inward i, ");
+		selectInwardJoinQuery.append(tablePrefix);
+		selectInwardJoinQuery.append("Commodity c ");
+		selectInwardJoinQuery.append("where w.id=? and i.wh_admin_id=? and c.whid=? and c.id=?");
+		Object arg[] = { inward.getWhAdminId(), inward.getWhAdminId(), inward.getWhAdminId(), inward.getCommodityId() };
+		List<Map<String, Object>> row = jdbcTemplate.queryForList(selectInwardJoinQuery.toString(), arg);
+		String whId = "";
+		String commodity = "";
+		if (row.size() != 0) {
+			whId = row.get(0).get("whid").toString();
+			commodity = row.get(0).get("name").toString();
+		}
+
 		Email email = new Email();
-		email.setMessage("Lot No " + inward.getLotName() + " Inwarded");
+		StringBuilder message = new StringBuilder();
+		message.append("Lot Inward");
+		message.append("\n \n");
+		message.append("ALERT:\n");
+		message.append("Dear Customer, Your<" + commodity + "> commodity lot (Lot No. " + inward.getLotName());
+		message.append(") has been deposited in" + "<" + whId);
+		message.append("> warehouse.\nFor more report details, please log in your EZEE");
+		message.append("WMS account on www.ezeewms.com  or call 70205 23599");
+		email.setMessage(message.toString());
 		email.setToEmail(to);
-		email.setSubject("Inward Done");
+		email.setSubject("Lot Inward");
 		EmailUtil.sendEmail(email);
+		SMSUtil.sendSms(message.toString(), number);
 		logger.info("Email Notification for Inward Done");
 	}
 
 	public void sendEmailToTraderForOutward(Outward out) {
 		StringBuilder selectQuery = new StringBuilder();
-		selectQuery.append("select trader_email from ");
+		selectQuery.append("select trader_email, trader_contact_no from ");
 		selectQuery.append(tablePrefix);
 		selectQuery.append("Trader where id=?");
 		Object arguments[] = { out.getTraderId() };
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
 		String to = "";
+		String number = "";
 		if (rows.size() != 0) {
 			to = rows.get(0).get("trader_email").toString();
+			number = rows.get(0).get("trader_contact_no").toString();
 		}
+		StringBuilder selectOutJoinQuery = new StringBuilder();
+		selectOutJoinQuery.append("select w.whid, c.name from ");
+		selectOutJoinQuery.append(tablePrefix);
+		selectOutJoinQuery.append("Warehouse w, ");
+		selectOutJoinQuery.append(tablePrefix);
+		selectOutJoinQuery.append("Inward i, ");
+		selectOutJoinQuery.append(tablePrefix);
+		selectOutJoinQuery.append("Commodity c ");
+		selectOutJoinQuery.append("where w.id=? and i.wh_admin_id=? and c.whid=? and c.id=");
+		selectOutJoinQuery.append("(select commodity_id from dbo.Inward where inward_id=?)");
+		Object arg[] = { out.getWhAdminId(), out.getWhAdminId(), out.getWhAdminId(), out.getInwardId() };
+		List<Map<String, Object>> row = jdbcTemplate.queryForList(selectOutJoinQuery.toString(), arg);
+		String whId = "";
+		String commodity = "";
+		if (row.size() != 0) {
+			whId = row.get(0).get("whid").toString();
+			commodity = row.get(0).get("name").toString();
+		}
+
 		Email email = new Email();
-		email.setMessage("Lot No " + out.getLotName() + " Outwarded");
+		StringBuilder message = new StringBuilder();
+		message.append("Lot Outward");
+		message.append("\n \n");
+		message.append("ALERT:\n");
+		message.append("Dear Customer, Your<" + commodity + "> commodity lot (Lot No. " + out.getLotName());
+		message.append(") has been outward from " + "<" + whId);
+		message.append("> warehouse.\nFor more report details, please log in your EZEE");
+		message.append("WMS account on www.ezeewms.com  or call 9170205 23599");
+		email.setMessage(message.toString());
+
 		email.setToEmail(to);
 		email.setSubject("Outward Done");
 		EmailUtil.sendEmail(email);
-		logger.info("Email Notification for Inward Done");
+		SMSUtil.sendSms(message.toString(), number);
+		logger.info("Email Notification for Outward Done");
 	}
 }

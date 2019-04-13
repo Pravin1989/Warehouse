@@ -22,6 +22,8 @@ public class Inward implements Comparable<Inward> {
 	private String vehicleNo;
 	private String commodityName;
 	private String categoryName;
+	private boolean lotAlreadyPresent;
+	private String whId;
 
 	public void setWhAdminId(Integer whAdminId) {
 		this.whAdminId = whAdminId;
@@ -179,5 +181,21 @@ public class Inward implements Comparable<Inward> {
 
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
+	}
+
+	public boolean isLotAlreadyPresent() {
+		return lotAlreadyPresent;
+	}
+
+	public void setLotAlreadyPresent(boolean lotAlreadyPresent) {
+		this.lotAlreadyPresent = lotAlreadyPresent;
+	}
+
+	public String getWhId() {
+		return whId;
+	}
+
+	public void setWhId(String whId) {
+		this.whId = whId;
 	}
 }
