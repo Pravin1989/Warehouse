@@ -18,6 +18,7 @@ import com.amiablecore.warehouse.beans.Email;
 
 public class EmailUtil {
 	private static Logger logger = LoggerFactory.getLogger(EmailUtil.class);
+
 	/**
 	 * Utility method to send simple HTML email
 	 * 
@@ -40,7 +41,8 @@ public class EmailUtil {
 
 			msg.setSubject(subject, "UTF-8");
 
-			msg.setText(body, "UTF-8");
+			// msg.setText(body, "UTF-8");
+			msg.setContent(body, "text/html; charset=utf-8");
 
 			msg.setSentDate(new Date());
 

@@ -535,15 +535,15 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		message.append("Lot Inward");
 		message.append("\n \n");
 		message.append("ALERT:\n");
-		message.append("Dear Customer, Your<" + commodity + "> commodity lot (Lot No. " + inward.getLotName());
-		message.append(") has been deposited in" + "<" + whId);
-		message.append("> warehouse.\nFor more report details, please log in your EZEE");
-		message.append("WMS account on www.ezeewms.com  or call 70205 23599");
+		message.append("Dear Customer, Your<b>" + commodity + "<b/> commodity lot <b>(Lot No. " + inward.getLotName());
+		message.append(")</b> has been deposited in" + "<b>" + whId);
+		message.append("</b> warehouse.\nFor more report details, please log in your <b>EZEE");
+		message.append("WMS</b> account on www.ezeewms.com  or call on 70205 23599");
 		email.setMessage(message.toString());
 		email.setToEmail(to);
 		email.setSubject("Lot Inward");
 		EmailUtil.sendEmail(email);
-		SMSUtil.sendSms(message.toString(), number);
+		SMSUtil.sendSms(message.toString().replaceAll("<b>", "").replaceAll("</b>", ""), number);
 		logger.info("Email Notification for Inward Done");
 	}
 
@@ -584,16 +584,16 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		message.append("Lot Outward");
 		message.append("\n \n");
 		message.append("ALERT:\n");
-		message.append("Dear Customer, Your<" + commodity + "> commodity lot (Lot No. " + out.getLotName());
-		message.append(") has been outward from " + "<" + whId);
-		message.append("> warehouse.\nFor more report details, please log in your EZEE");
-		message.append("WMS account on www.ezeewms.com  or call 9170205 23599");
+		message.append("Dear Customer, Your<b>" + commodity + "</b> commodity lot <b>(Lot No. " + out.getLotName());
+		message.append(")</b> has been outward from " + "<b>" + whId);
+		message.append("</b> warehouse.\nFor more report details, please log in your <b>EZEE");
+		message.append("WMS</b> account on www.ezeewms.com  or call on 9170205 23599");
 		email.setMessage(message.toString());
 
 		email.setToEmail(to);
 		email.setSubject("Outward Done");
 		EmailUtil.sendEmail(email);
-		SMSUtil.sendSms(message.toString(), number);
+		SMSUtil.sendSms(message.toString().replaceAll("<b>", "").replaceAll("</b>", ""), number);
 		logger.info("Email Notification for Outward Done");
 	}
 }
