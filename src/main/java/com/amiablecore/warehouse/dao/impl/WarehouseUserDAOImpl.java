@@ -267,6 +267,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 	@Override
 	@Transactional
 	public Outward storeOutwardDetails(Outward outward) {
+
 		StringBuilder insertQuery = new StringBuilder();
 		insertQuery.append("INSERT INTO ");
 		insertQuery.append(tablePrefix);
@@ -354,6 +355,8 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 				updateToInwardComplete = new Inward();
 				updateToInwardComplete.setInwardId(in.getInwardId());
 				updateToInwardComplete.setWhUserId(in.getWhUserId());
+				updateToInwardComplete.setTotalQuantity(0);
+				updateToInwardComplete.setTotalWeight(0.0);
 				logger.info("updateToIwnardCompleteList");
 			}
 			if (outward.getTotalQuantity() < in.getTotalQuantity()) {
@@ -367,14 +370,16 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 			}
 		});
 		if (updateToInwardComplete != null) {
-			int[] types = { Types.BOOLEAN, Types.BOOLEAN, Types.INTEGER, Types.DATE, Types.INTEGER };
+			int[] types = { Types.BOOLEAN, Types.BOOLEAN, Types.INTEGER, Types.DATE, Types.DOUBLE, Types.INTEGER,
+					Types.INTEGER };
 			StringBuilder updateCompleteQuery = new StringBuilder();
 			updateCompleteQuery.append("UPDATE ");
 			updateCompleteQuery.append(tablePrefix);
 			updateCompleteQuery.append(
-					"Inward set isOutwardFullyComplete=?, is_sync_with_outward=?, last_updated_by=?, last_updated_on=? where inward_Id=?");
+					"Inward set isOutwardFullyComplete=?, is_sync_with_outward=?, last_updated_by=?, last_updated_on=?, total_weight=?, total_quantity=? where inward_Id=?");
 			Object arg[] = new Object[] { true, true, updateToInwardComplete.getWhUserId(),
-					new Date(new java.util.Date().getTime()), updateToInwardComplete.getInwardId() };
+					new Date(new java.util.Date().getTime()), updateToInwardComplete.getTotalWeight(),
+					updateToInwardComplete.getTotalQuantity(), updateToInwardComplete.getInwardId() };
 			jdbcTemplate.update(updateCompleteQuery.toString(), arg, types);
 			logger.info("updateToInwardComplete Updated");
 		}
@@ -535,7 +540,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		message.append("Lot Inward");
 		message.append("\n \n");
 		message.append("ALERT:\n");
-		message.append("Dear Customer, Your<b>" + commodity + "<b/> commodity lot <b>(Lot No. " + inward.getLotName());
+		message.append("Dear Customer, Your <b>" + commodity + "<b/> commodity lot <b>(Lot No. " + inward.getLotName());
 		message.append(")</b> has been deposited in" + "<b>" + whId);
 		message.append("</b> warehouse.\nFor more report details, please log in your <b>EZEE");
 		message.append("WMS</b> account on www.ezeewms.com  or call on 70205 23599");
@@ -584,7 +589,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		message.append("Lot Outward");
 		message.append("\n \n");
 		message.append("ALERT:\n");
-		message.append("Dear Customer, Your<b>" + commodity + "</b> commodity lot <b>(Lot No. " + out.getLotName());
+		message.append("Dear Customer, Your <b>" + commodity + "</b> commodity lot <b>(Lot No. " + out.getLotName());
 		message.append(")</b> has been outward from " + "<b>" + whId);
 		message.append("</b> warehouse.\nFor more report details, please log in your <b>EZEE");
 		message.append("WMS</b> account on www.ezeewms.com  or call on 9170205 23599");
