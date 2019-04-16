@@ -239,9 +239,9 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 			}, holder);
 
 			Integer newlyAddedInwardId = 0;
-			if (holder.getKeys().size() > 1) {
-				newlyAddedInwardId = (Integer) holder.getKeys().get("inward_id");
-				inward.setWhId((String) holder.getKeys().get("whid"));
+			if (holder.getKeys().size() == 1) {
+				BigDecimal b = new BigDecimal(holder.getKeys().get("GENERATED_KEYS").toString());
+				newlyAddedInwardId = b.intValue();
 			}
 			lot.setInwardId(newlyAddedInwardId);
 			lot.setCommodityId(inward.getCommodityId());
@@ -307,14 +307,15 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		}, holder);
 
 		Integer newlyAddedOutwardId = 0;
-		if (holder.getKeys().size() > 1) {
-			newlyAddedOutwardId = (Integer) holder.getKeys().get("inward_id");
+		if (holder.getKeys().size() == 1) {
+			BigDecimal b = new BigDecimal(holder.getKeys().get("GENERATED_KEYS").toString());
+			newlyAddedOutwardId = b.intValue();
 		}
 		Outward outLot = new Outward();
 		outLot.setOutwardId(newlyAddedOutwardId);
 		logger.info("Outward Lot Added :");
 
-		sendEmailToTraderForOutward(outward);
+		outward.setOutwardId(newlyAddedOutwardId);
 
 		if (outward.getTotalWeight() == null) {
 			StringBuilder updateInwardQuery = new StringBuilder();
@@ -348,10 +349,11 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 			inwardList.add(inward);
 		}
 		logger.info(" updateInwardDetails InwardList Size : {}", inwardList.size());
+		updateToInwardPartiallyComplete = null;
+		updateToInwardComplete = null;
 		inwardList.forEach(in -> {
 			if (in.getTotalQuantity().equals(outward.getTotalQuantity())
 					&& in.getTotalWeight().equals(outward.getTotalWeight())) {
-				updateToInwardComplete = null;
 				updateToInwardComplete = new Inward();
 				updateToInwardComplete.setInwardId(in.getInwardId());
 				updateToInwardComplete.setWhUserId(in.getWhUserId());
@@ -360,7 +362,6 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 				logger.info("updateToIwnardCompleteList");
 			}
 			if (outward.getTotalQuantity() < in.getTotalQuantity()) {
-				updateToInwardPartiallyComplete = null;
 				updateToInwardPartiallyComplete = new Inward();
 				updateToInwardPartiallyComplete.setInwardId(in.getInwardId());
 				updateToInwardPartiallyComplete.setWhUserId(in.getWhUserId());
@@ -397,6 +398,19 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 			jdbcTemplate.update(updatePartialQuery.toString(), arg, types);
 			logger.info("updateToInwardPartiallyComplete Updated");
 		}
+
+		// update remaining quantity
+		int[] types1 = { Types.INTEGER, Types.INTEGER };
+		StringBuilder updateOutwardQuery = new StringBuilder();
+		updateOutwardQuery.append("UPDATE ");
+		updateOutwardQuery.append(tablePrefix);
+		updateOutwardQuery.append(
+				"Outward set remaining_qty=(select total_quantity from dbo.Inward where inward_Id=?) where outward_Id=?");
+		Object arg1[] = new Object[] { outward.getInwardId(), outward.getOutwardId() };
+		jdbcTemplate.update(updateOutwardQuery.toString(), arg1, types1);
+		logger.info("updateToInwardComplete Updated");
+
+		sendEmailToTraderForOutward(outward);
 	}
 
 	@Override
@@ -540,9 +554,9 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		message.append("Lot Inward");
 		message.append("\n \n");
 		message.append("ALERT:\n");
-		message.append("Dear Customer, Your <b>" + commodity + "<b/> commodity lot <b>(Lot No. " + inward.getLotName());
-		message.append(")</b> has been deposited in" + "<b>" + whId);
-		message.append("</b> warehouse.\nFor more report details, please log in your <b>EZEE");
+		message.append("Dear Customer, Your <b>" + commodity + "</b> commodity lot <b>(Lot No. " + inward.getLotName());
+		message.append(")</b> has been deposited in " + "<b>" + whId);
+		message.append("</b> warehouse.\nFor more report details, please log in to your <b>EZEE");
 		message.append("WMS</b> account on www.ezeewms.com  or call on 70205 23599");
 		email.setMessage(message.toString());
 		email.setToEmail(to);
@@ -591,7 +605,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		message.append("ALERT:\n");
 		message.append("Dear Customer, Your <b>" + commodity + "</b> commodity lot <b>(Lot No. " + out.getLotName());
 		message.append(")</b> has been outward from " + "<b>" + whId);
-		message.append("</b> warehouse.\nFor more report details, please log in your <b>EZEE");
+		message.append("</b> warehouse.\nFor more report details, please log in to your <b>EZEE");
 		message.append("WMS</b> account on www.ezeewms.com  or call on 9170205 23599");
 		email.setMessage(message.toString());
 
