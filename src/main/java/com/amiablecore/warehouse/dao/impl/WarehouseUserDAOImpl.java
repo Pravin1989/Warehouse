@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,10 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 
 	@Value(value = "${tablePrefix}")
 	private String tablePrefix;
+
+	SimpleDateFormat formatterUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+	SimpleDateFormat formatterIndia = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@Override
 	public List<Category> retrieveCategories(Integer commodityId) {
@@ -181,7 +186,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 	@Override
 	@Transactional
 	public Inward storeInwardDetails(Inward inward) {
-
+		formatterUTC.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
 		StringBuilder selectQuery = new StringBuilder();
 		selectQuery.append("select * from ");
 		selectQuery.append(tablePrefix);
@@ -228,7 +233,9 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 						ps.setBoolean(12, true);
 						ps.setString(13, inward.getUnit());
 						ps.setInt(14, inward.getWhUserId());
-						ps.setDate(15, new Date(new java.util.Date().getTime()));
+						ps.setDate(15,
+								new Date(formatterIndia.parse(formatterUTC.format(new java.util.Date())).getTime()));
+						// ps.setDate(15, new Date(new java.util.Date().getTime()));
 						ps.setString(16, inward.getGrade());
 						ps.setString(17, inward.getVehicleNo());
 					} catch (Exception e) {
@@ -272,8 +279,8 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 		insertQuery.append("INSERT INTO ");
 		insertQuery.append(tablePrefix);
 		insertQuery.append("Outward(Inward_Id, Weight_Per_Bag, Total_Quantity, total_weight, Outward_Date, ");
-		insertQuery.append("lot_name, Trader_Id, Wh_Admin_Id, wh_User_Id, unit, grade)");
-		insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?,?,?)");
+		insertQuery.append("lot_name, Trader_Id, Wh_Admin_Id, wh_User_Id, unit, grade, vehicle_no)");
+		insertQuery.append("VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
 		KeyHolder holder = new GeneratedKeyHolder();
 		jdbcTemplate.update(new PreparedStatementCreator() {
 			@Override
@@ -299,6 +306,7 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 					ps.setInt(9, outward.getWhUserId());
 					ps.setString(10, outward.getUnit());
 					ps.setString(11, outward.getGrade());
+					ps.setString(12, outward.getVehicleNo());
 				} catch (Exception e) {
 					logger.error("Failed To Outward :", e);
 				}
@@ -378,10 +386,16 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 			updateCompleteQuery.append(tablePrefix);
 			updateCompleteQuery.append(
 					"Inward set isOutwardFullyComplete=?, is_sync_with_outward=?, last_updated_by=?, last_updated_on=?, total_weight=?, total_quantity=? where inward_Id=?");
-			Object arg[] = new Object[] { true, true, updateToInwardComplete.getWhUserId(),
-					new Date(new java.util.Date().getTime()), updateToInwardComplete.getTotalWeight(),
-					updateToInwardComplete.getTotalQuantity(), updateToInwardComplete.getInwardId() };
-			jdbcTemplate.update(updateCompleteQuery.toString(), arg, types);
+			try {
+				Object arg[] = new Object[] { true, true, updateToInwardComplete.getWhUserId(),
+						new Date(formatterIndia.parse(formatterUTC.format(new java.util.Date())).getTime()),
+						updateToInwardComplete.getTotalWeight(), updateToInwardComplete.getTotalQuantity(),
+						updateToInwardComplete.getInwardId() };
+				jdbcTemplate.update(updateCompleteQuery.toString(), arg, types);
+			} catch (Exception e) {
+				logger.info("Exception Raised during Parsing Date");
+			}
+
 			logger.info("updateToInwardComplete Updated");
 		}
 		if (updateToInwardPartiallyComplete != null) {
@@ -391,11 +405,16 @@ public class WarehouseUserDAOImpl implements WarehouseUserDAO {
 			updatePartialQuery.append(tablePrefix);
 			updatePartialQuery.append(
 					"Inward set total_quantity=?, total_weight=?, is_sync_with_outward=?, last_updated_by=?, last_updated_on=? where inward_Id=?");
-			Object arg[] = new Object[] { updateToInwardPartiallyComplete.getTotalQuantity(),
-					updateToInwardPartiallyComplete.getTotalWeight(), true,
-					updateToInwardPartiallyComplete.getWhUserId(), new Date(new java.util.Date().getTime()),
-					updateToInwardPartiallyComplete.getInwardId(), };
-			jdbcTemplate.update(updatePartialQuery.toString(), arg, types);
+			try {
+				Object arg[] = new Object[] { updateToInwardPartiallyComplete.getTotalQuantity(),
+						updateToInwardPartiallyComplete.getTotalWeight(), true,
+						updateToInwardPartiallyComplete.getWhUserId(),
+						new Date(formatterIndia.parse(formatterUTC.format(new java.util.Date())).getTime()),
+						updateToInwardPartiallyComplete.getInwardId(), };
+				jdbcTemplate.update(updatePartialQuery.toString(), arg, types);
+			} catch (Exception e) {
+				logger.info("Exception Raised during Parsing Date");
+			}
 			logger.info("updateToInwardPartiallyComplete Updated");
 		}
 

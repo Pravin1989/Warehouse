@@ -6,6 +6,7 @@ package com.amiablecore.warehouse.beans;
  */
 public class Trader {
 	private String traderName;
+	private Integer id;
 	private String emailId;
 	private String city;
 	private String contactNo;
@@ -17,7 +18,7 @@ public class Trader {
 	private boolean sync;
 	private boolean alreadyPresent;
 	private String traderAddress;
-	
+
 	public boolean isActive() {
 		return active;
 	}
@@ -123,5 +124,13 @@ public class Trader {
 
 	public void setTraderAddress(String traderAddress) {
 		this.traderAddress = traderAddress;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 }

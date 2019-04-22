@@ -1,5 +1,6 @@
 package com.amiablecore.warehouse.dao.impl;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -22,9 +23,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.amiablecore.warehouse.beans.Category;
 import com.amiablecore.warehouse.beans.Commodity;
+import com.amiablecore.warehouse.beans.Email;
 import com.amiablecore.warehouse.beans.Grade;
 import com.amiablecore.warehouse.beans.Trader;
 import com.amiablecore.warehouse.beans.WarehouseUser;
+import com.amiablecore.warehouse.config.EmailUtil;
+import com.amiablecore.warehouse.config.SMSUtil;
 import com.amiablecore.warehouse.dao.WarehouseAdminDAO;
 
 /**
@@ -73,11 +77,13 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 			}, holder);
 
 			Integer newUserId = 0;
-			if (holder.getKeys().size() > 1) {
-				newUserId = (Integer) holder.getKeys().get("whuserid");
+			if (holder.getKeys().size() == 1) {
+				BigDecimal b = new BigDecimal(holder.getKeys().get("GENERATED_KEYS").toString());
+				newUserId = b.intValue();
 			}
 			user.setUserId(newUserId);
 			user.setAlreadyPresent(false);
+			prepareMessageToUser(newUserId);
 			logger.info("User Created");
 			return user;
 		}
@@ -100,8 +106,8 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 		StringBuilder selectQuery = new StringBuilder();
 		selectQuery.append("select * from ");
 		selectQuery.append(tablePrefix);
-		selectQuery.append("Trader where trader_contact_no=? and trader_email=?");
-		Object arguments[] = { trader.getContactNo(), trader.getEmailId() };
+		selectQuery.append("Trader where trader_email=?");
+		Object arguments[] = { trader.getEmailId() };
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectQuery.toString(), arguments);
 		if (rows.size() == 0) {
 			StringBuilder insertQuery = new StringBuilder();
@@ -131,15 +137,18 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 			}, holder);
 
 			Integer newTraderId = 0;
-			if (holder.getKeys().size() > 1) {
-				newTraderId = (Integer) holder.getKeys().get("trader_id");
+			if (holder.getKeys().size() == 1) {
+				BigDecimal b = new BigDecimal(holder.getKeys().get("GENERATED_KEYS").toString());
+				newTraderId = b.intValue();
 			}
-			trader.setTraderId(newTraderId);
+			trader.setId(newTraderId);
 			trader.setAlreadyPresent(false);
+			prepareEmailAndMessageToTrader(newTraderId);
 			logger.info("Trader Created");
 			return trader;
 		}
 		for (Map<String, Object> row : rows) {
+			trader.setId((Integer) row.get("id"));
 			trader.setTraderId((Integer) row.get("trader_id"));
 			trader.setTraderName((String) row.get("trader_name"));
 			trader.setEmailId((String) row.get("trader_email"));
@@ -447,5 +456,82 @@ public class WarehouseAdminDAOImpl implements WarehouseAdminDAO {
 		}
 		logger.info("Grades Retrieved");
 		return gradeList;
+	}
+
+	public void prepareEmailAndMessageToTrader(Integer id) {
+
+		StringBuilder selectOutJoinQuery = new StringBuilder();
+		selectOutJoinQuery.append("select T.trader_id, T.trader_email,T.trader_contact_no, T. trader_name, ");
+		selectOutJoinQuery.append("L.Password from ");
+		selectOutJoinQuery.append(tablePrefix);
+		selectOutJoinQuery.append("Trader T,");
+		selectOutJoinQuery.append(tablePrefix);
+		selectOutJoinQuery.append("Login L where ");
+		selectOutJoinQuery.append("L.UserId  = (select trader_id from Trader where id=?)");
+		selectOutJoinQuery.append("and T.trader_id=(select trader_id from Trader where id=?)");
+		Object arg[] = { id, id };
+		List<Map<String, Object>> row = jdbcTemplate.queryForList(selectOutJoinQuery.toString(), arg);
+
+		String traderId = "";
+		String traderName = "";
+		String traderEmail = "";
+		String traderMobile = "";
+		String traderPassword = "";
+		if (row.size() != 0) {
+			traderId = row.get(0).get("trader_id").toString();
+			traderMobile = row.get(0).get("trader_contact_no").toString();
+			traderEmail = row.get(0).get("trader_email").toString();
+			traderName = row.get(0).get("trader_name").toString();
+			traderPassword = row.get(0).get("password").toString();
+		}
+		Email email = new Email();
+		StringBuilder message = new StringBuilder();
+		message.append("Trader Registered");
+		message.append("\n \n");
+		message.append("ALERT:\n");
+		message.append("Dear <b>" + traderName + "</b>,\n You are registered with <b> EZEEWMS </b> ");
+		message.append("Your credentials are :" + "Id : <b>" + traderId);
+		message.append("</b> and Password : <b>" + traderPassword + "</b>");
+		message.append("\nPlease log in to your <b>EZEE");
+		message.append("WMS</b> account on www.ezeewms.com  or call on 9170205 23599");
+		email.setMessage(message.toString());
+
+		email.setToEmail(traderEmail);
+		email.setSubject("Trader Registered !!!");
+		EmailUtil.sendEmail(email);
+		SMSUtil.sendSms(message.toString().replaceAll("<b>", "").replaceAll("</b>", ""), traderMobile);
+		logger.info("Email and SMS Notification for Trader Registration");
+	}
+
+	public void prepareMessageToUser(Integer id) {
+
+		StringBuilder selectOutJoinQuery = new StringBuilder();
+		selectOutJoinQuery.append("select * from ");
+		selectOutJoinQuery.append(tablePrefix);
+		selectOutJoinQuery.append("WarehouseUser where whuserid=?");
+		Object arg[] = { id };
+		List<Map<String, Object>> row = jdbcTemplate.queryForList(selectOutJoinQuery.toString(), arg);
+
+		String whUserName = "";
+		String whUserPassword = "";
+		String whUserMobile = "";
+		String whUserLoginId = "";
+		if (row.size() != 0) {
+			whUserName = row.get(0).get("whusername").toString();
+			whUserPassword = row.get(0).get("password").toString();
+			whUserMobile = row.get(0).get("contactno").toString();
+			whUserLoginId = row.get(0).get("loginid").toString();
+		}
+		StringBuilder message = new StringBuilder();
+		message.append("User Registered");
+		message.append("\n \n");
+		message.append("ALERT:\n");
+		message.append("Dear " + whUserName + ",\n You are registered with EZEEWMS ");
+		message.append("Your credentials are as follows. Id : " + whUserLoginId);
+		message.append(" and Password : " + whUserPassword);
+		message.append("\nPlease log in to your EZEE App.");
+
+		SMSUtil.sendSms(message.toString(), whUserMobile);
+		logger.info("SMS Notification for User Registration");
 	}
 }

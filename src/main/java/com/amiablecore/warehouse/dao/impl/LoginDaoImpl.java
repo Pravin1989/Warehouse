@@ -1,6 +1,5 @@
 package com.amiablecore.warehouse.dao.impl;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
